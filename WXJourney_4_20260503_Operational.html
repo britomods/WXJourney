@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WXjourney</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep-blue: #0a0e29;     
+            --panel-bg: #0d1233;     
+            --neon-green: #39ff14;    
+            --action-red: #FD3777;       
+            --hot-purple: #BF00FF;       
+            --electric-cyan: #00f0ff; 
+            --electric-purple: #8a2be2; 
+            --tron-orange: #ff8d00;   
+            --plus-lime: #CCFF00;        
+            --country-plum: #920075;     
+            --date-mint: #00ffa3;        
+            --text-main: #f0f0f0;     
+        }
+
+        body {
+            background-color: var(--bg-deep-blue);
+            color: var(--text-main);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 10px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: var(--electric-cyan);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--plus-lime);
+            padding-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .controls-container {
+            background-color: var(--panel-bg);
+            padding: 12px; 
+            border: 2px solid var(--electric-purple); 
+            width: 100%;
+            max-width: 400px; 
+            margin-bottom: 25px;
+            box-sizing: border-box;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .date-action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 5px; 
+        }
+
+        .date-plus-group {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg-deep-blue);
+            border: 1px solid var(--electric-cyan);
+            color: var(--electric-cyan);
+            font-family: inherit;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+
+        /* Control Panel Height Matching */
+        #date-input, #add-btn, #temp-toggle-btn, #refresh-btn {
+            height: 38px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #date-input {
+            padding: 0 5px;
+            background-color: var(--bg-deep-blue);
+            border: 2px solid var(--date-mint);
+            color: var(--date-mint);
+            font-family: inherit;
+            font-weight: normal; 
+            width: 110px; 
+            font-size: 0.7rem; 
+            text-align: center;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) sepia(1) saturate(5) hue-rotate(100deg);
+        }
+
+        button {
+            background-color: transparent;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-family: inherit;
+        }
+
+        #add-btn {
+            color: var(--plus-lime);
+            border: 2px solid var(--plus-lime);
+            font-size: 1.4rem;
+            padding: 0 12px;
+        }
+
+        #add-btn:hover {
+            background-color: var(--plus-lime);
+            color: var(--bg-deep-blue);
+        }
+
+        /* Unit Toggle Styling */
+        #temp-toggle-btn {
+            color: var(--country-plum);
+            border: 2px solid var(--country-plum);
+            padding: 0 8px;
+            min-width: 70px;
+            display: flex;
+            gap: 6px;
+        }
+        
+        #temp-toggle-btn span {
+            font-weight: normal;
+            transition: all 0.2s;
+        }
+
+        #temp-toggle-btn .active-unit {
+            font-weight: 900;
+            font-size: 1.3rem; 
+            text-decoration: none; 
+        }
+
+        #refresh-btn {
+            color: var(--action-red);
+            border: 2px solid var(--action-red);
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: normal; 
+        }
+
+        #refresh-btn:hover {
+            background-color: var(--action-red);
+            color: var(--bg-deep-blue);
+        }
+
+        #suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--electric-purple);
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 100;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        #suggestions li {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--electric-purple);
+        }
+
+        #suggestions li:hover {
+            background-color: var(--electric-purple);
+            color: white;
+        }
+
+        /* Journey Cards */
+        #journey-list {
+            width: 100%;
+            max-width: 400px; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .entry-card {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--electric-purple); 
+            padding: 8px; 
+            box-sizing: border-box;
+        }
+
+        .entry-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px; 
+            margin-bottom: 8px; 
+            border-bottom: 1px solid var(--plus-lime);
+            padding-bottom: 6px; 
+        }
+
+        .entry-row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .entry-row-bottom {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .location-link {
+            color: var(--electric-cyan);
+            text-decoration: none;
+            font-size: 0.9rem; 
+            font-weight: bold;
+            flex: 1; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .country-text {
+            color: var(--country-plum);
+            font-size: 0.9rem; 
+            display: block;
+            font-weight: bold;
+            flex: 1; 
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 5px;
+        }
+
+        .day-label {
+            color: var(--date-mint);
+            font-weight: normal; 
+            font-size: 0.9rem; 
+        }
+
+        .remove-btn {
+            background: transparent;
+            color: var(--tron-orange);
+            border: 1px solid var(--tron-orange);
+            padding: 0;
+            font-weight: bold;
+            height: 28px; 
+            width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            flex-shrink: 0; 
+        }
+
+        /* Variable width/height for results date picker */
+        input[type="date"].date-input-edit {
+            background: transparent;
+            border: 1px solid var(--date-mint);
+            color: var(--date-mint);
+            padding: 2px 4px;
+            font-family: inherit;
+            height: auto; 
+            min-height: 24px;
+            width: fit-content; 
+            max-width: 125px;
+            box-sizing: border-box;
+            font-weight: normal; 
+            font-size: 0.7rem; 
+        }
+
+        .weather-data {
+            font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0px; 
+        }
+
+        .weather-row { 
+            display: flex; 
+            padding: 2px 0; 
+        }
+
+        .weather-label {
+            width: 45px; 
+            color: var(--hot-purple);
+            font-weight: normal; 
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>WXjourney</h1>
+
+    <div class="controls-container">
+        <div class="input-group">
+            <input type="text" id="location-input" placeholder="Enter City/Town..." autocomplete="off">
+            <ul id="suggestions"></ul>
+        </div>
+        <div class="date-action-row">
+            <div class="date-plus-group">
+                <input type="date" id="date-input">
+                <button id="add-btn">+</button>
+            </div>
+            <button id="temp-toggle-btn">
+                <span id="label-f">° F</span>
+                <span id="label-c">° C</span>
+            </button>
+            <button id="refresh-btn">Refresh</button>
+        </div>
+    </div>
+
+    <div id="journey-list"></div>
+
+    <script>
+        let journeyEntries = JSON.parse(localStorage.getItem('wxjourney_v16')) || [];
+        let tempUnit = 'fahrenheit'; 
+        let selectedLocationInfo = null;
+
+        const locationInput = document.getElementById('location-input');
+        const suggestionsList = document.getElementById('suggestions');
+        const dateInput = document.getElementById('date-input');
+        const addBtn = document.getElementById('add-btn');
+        const tempToggleBtn = document.getElementById('temp-toggle-btn');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const journeyListContainer = document.getElementById('journey-list');
+
+        function convertValue(val, fromUnit, toUnit) {
+            if (fromUnit === toUnit) return val;
+            if (toUnit === 'celsius') {
+                return Math.round((val - 32) * 5 / 9);
+            } else {
+                return Math.round((val * 9 / 5) + 32);
+            }
+        }
+
+        function updateToggleDisplay() {
+            const f = document.getElementById('label-f');
+            const c = document.getElementById('label-c');
+            if (tempUnit === 'fahrenheit') {
+                f.className = 'active-unit';
+                c.className = '';
+            } else {
+                f.className = '';
+                c.className = 'active-unit';
+            }
+        }
+
+        function getWeatherDescription(code) {
+            const codes = {
+                0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+                45: 'Fog', 51: 'Light drizzle', 61: 'Slight rain', 63: 'Moderate rain',
+                71: 'Slight snow', 80: 'Rain showers', 95: 'Thunderstorm'
+            };
+            return codes[code] || 'Fair';
+        }
+
+        locationInput.addEventListener('input', async (e) => {
+            const query = e.target.value.trim();
+            if (query.length < 2) { suggestionsList.style.display = 'none'; return; }
+            try {
+                const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5`);
+                const data = await res.json();
+                suggestionsList.innerHTML = '';
+                if (data.results) {
+                    data.results.forEach(p => {
+                        const li = document.createElement('li');
+                        const stateStr = p.admin1 ? `, ${p.admin1}` : '';
+                        li.textContent = `${p.name}${stateStr} (${p.country})`;
+                        li.onclick = () => {
+                            locationInput.value = `${p.name}${stateStr}`;
+                            selectedLocationInfo = { name: p.name, state: p.admin1 || '', country: p.country, lat: p.latitude, lon: p.longitude };
+                            suggestionsList.style.display = 'none';
+                        };
+                        suggestionsList.appendChild(li);
+                    });
+                    suggestionsList.style.display = 'block';
+                }
+            } catch (err) { console.error(err); }
+        });
+
+        async function fetchWeather(lat, lon, dateStr) {
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${dateStr}&end_date=${dateStr}&hourly=temperature_2m,weathercode&temperature_unit=${tempUnit}`;
+                const res = await fetch(url);
+                const data = await res.json();
+                const h = data.hourly;
+                const getH = (idx) => ({ temp: Math.round(h.temperature_2m[idx]), code: h.weathercode[idx] });
+                return { morning: getH(8), afternoon: getH(14), evening: getH(20), unit: tempUnit };
+            } catch (err) { return null; }
+        }
+
+        function renderList() {
+            journeyEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+            localStorage.setItem('wxjourney_v16', JSON.stringify(journeyEntries));
+            journeyListContainer.innerHTML = '';
+
+            journeyEntries.forEach(entry => {
+                const dateObj = new Date(entry.date + 'T00:00:00');
+                const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+                
+                // Allow safe rendering even if weather is pending (null)
+                let weatherHTML = `<div class="weather-data"><span style="color:var(--tron-orange); font-size: 0.8rem; padding: 2px 0;">Updating weather...</span></div>`;
+
+                if (entry.weather) {
+                    const unitSymbol = tempUnit === 'fahrenheit' ? '° F' : '° C';
+                    const am = convertValue(entry.weather.morning.temp, entry.weather.unit, tempUnit);
+                    const pm = convertValue(entry.weather.afternoon.temp, entry.weather.unit, tempUnit);
+                    const ev = convertValue(entry.weather.evening.temp, entry.weather.unit, tempUnit);
+
+                    weatherHTML = `
+                        <div class="weather-data">
+                            <div class="weather-row"><span class="weather-label">AM:</span><span>${am}${unitSymbol}, ${getWeatherDescription(entry.weather.morning.code)}</span></div>
+                            <div class="weather-row"><span class="weather-label">PM:</span><span>${pm}${unitSymbol}, ${getWeatherDescription(entry.weather.afternoon.code)}</span></div>
+                            <div class="weather-row"><span class="weather-label">EV:</span><span>${ev}${unitSymbol}, ${getWeatherDescription(entry.weather.evening.code)}</span></div>
+                        </div>
+                    `;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'entry-card';
+                card.innerHTML = `
+                    <div class="entry-header">
+                        <div class="entry-row-top">
+                            <a href="http://googleusercontent.com/maps.google.com/4${entry.lat},${entry.lon}" target="_blank" class="location-link">
+                                ${entry.name}${entry.state ? ', ' + entry.state : ''}
+                            </a>
+                            <span class="country-text">${entry.country}</span>
+                            <button class="remove-btn" onclick="removeEntry('${entry.id}')">X</button>
+                        </div>
+                        <div class="entry-row-bottom">
+                            <span class="day-label">${dayName}</span>
+                            <input type="date" class="date-input-edit" value="${entry.date}" data-id="${entry.id}">
+                        </div>
+                    </div>
+                    ${weatherHTML}
+                `;
+                journeyListContainer.appendChild(card);
+            });
+
+            // Optimistic Update Event Listener
+            document.querySelectorAll('.date-input-edit').forEach(input => {
+                input.addEventListener('change', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const entry = journeyEntries.find(i => i.id === id);
+                    if (entry) {
+                        // 1. Instantly update date and trigger sorting/re-rendering
+                        entry.date = e.target.value;
+                        entry.weather = null; // Forces "Updating weather..." state temporarily
+                        renderList();
+
+                        // 2. Fetch the new weather in the background
+                        const newWeather = await fetchWeather(entry.lat, entry.lon, entry.date);
+                        
+                        // 3. Ensure the entry still exists and date hasn't changed again before applying
+                        const currentEntry = journeyEntries.find(i => i.id === id);
+                        if (currentEntry && currentEntry.date === entry.date) {
+                            currentEntry.weather = newWeather;
+                            renderList();
+                        }
+                    }
+                });
+            });
+        }
+
+        addBtn.addEventListener('click', async () => {
+            if (!selectedLocationInfo || !dateInput.value) return;
+            const weather = await fetchWeather(selectedLocationInfo.lat, selectedLocationInfo.lon, dateInput.value);
+            journeyEntries.push({ id: Date.now().toString(), ...selectedLocationInfo, date: dateInput.value, weather });
+            
+            // Clear inputs
+            locationInput.value = ''; 
+            dateInput.value = ''; 
+            selectedLocationInfo = null;
+            
+            renderList();
+        });
+
+        tempToggleBtn.addEventListener('click', () => {
+            tempUnit = (tempUnit === 'fahrenheit') ? 'celsius' : 'fahrenheit';
+            updateToggleDisplay();
+            renderList();
+        });
+
+        window.removeEntry = (id) => {
+            journeyEntries = journeyEntries.filter(e => e.id !== id);
+            renderList();
+        };
+
+        refreshBtn.addEventListener('click', async () => {
+            refreshBtn.textContent = "WAIT";
+            for (let e of journeyEntries) { e.weather = await fetchWeather(e.lat, e.lon, e.date); }
+            refreshBtn.textContent = "REFRESH";
+            renderList();
+        });
+
+        updateToggleDisplay();
+        renderList();
+    </script>
+</body>
+</html>
