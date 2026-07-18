@@ -1,10 +1,14 @@
+<!-- Location Picker Library/API: Open-Meteo Geocoding API -->
+<!-- Date Picker Library: None (Native Browser Implementation) -->
+<!-- Weather Forecast Source API: Open-Meteo Weather Forecast API; source is European Centre for Medium-Range Weather Forecasts -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WXJourney</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-deep-blue: #0a0e29;     
@@ -46,6 +50,7 @@
         h1 {
             color: var(--electric-cyan);
             text-transform: uppercase;
+            font-weight: 400;
             letter-spacing: 6px;
             margin-top: 0;
             margin-bottom: 0; 
@@ -462,7 +467,7 @@
 <body>
 
     <div class="header-container">
-        <h1>WX<SPAN STYLE="FONT-WEIGHT:normal">Journey</SPAN></h1>
+        <h1>WX<SPAN STYLE="FONT-WEIGHT:100">Journey</SPAN></h1>
         <button class="info-btn" id="open-welcome-btn">info</button>
     </div>
 
@@ -490,7 +495,8 @@
     <div class="welcome-overlay" id="welcome-modal">
         <div class="controls-container">
             <button class="remove-btn" id="close-welcome-btn">X</button>
-            <h1><SPAN STYLE="FONT-WEIGHT:100">WELCOME</SPAN>TO<p style="margin: 0;">WX<SPAN STYLE="FONT-WEIGHT:normal">JOURNEY</SPAN></p></h1>
+            <h1><SPAN STYLE="FONT-WEIGHT:100">WELCOME</SPAN><SPAN STYLE="FONT-WEIGHT:400">TO</SPAN>
+                <p style="margin: 0; FONT-WEIGHT:400">WX<SPAN STYLE="FONT-WEIGHT:100">JOURNEY</SPAN></p></h1>
             <div class="intro-text">
                 <p>WXJourney allows you to create a custom forecast by date and location.</p>
                 <p>Forecast data is provided by the ECMWF.</p>
