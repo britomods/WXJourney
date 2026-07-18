@@ -20,6 +20,7 @@
             --date-mint: #00ffa3;        
             --text-main: #f0f0f0;
             --country-plum: #920075;     
+            --loon-blue: #0e5862; 
         }
 
         body {
@@ -340,13 +341,129 @@
             font-weight: normal; 
         }
 
+        /* Styling for the Integrated Welcome Modal Overlay Scaled Down */
+        .welcome-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 14, 41, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 10px; /* Matched to main body padding */
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-overlay .controls-container {
+            background-color: var(--panel-bg); /* Swapped to panel-bg to match the control panel */
+            padding: 12px; /* Downscaled from 25px to match operational panel */
+            border: 2px solid var(--electric-purple);
+            width: 100%;
+            max-width: 400px; /* Scaled down from 500px to perfectly match operational view */
+            box-sizing: border-box;
+            margin-top: 0;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .welcome-overlay h1 {
+            color: var(--electric-cyan);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-bottom: 5px;
+            font-size: 1.5rem;
+            text-align: left;
+            border-bottom: 3px solid var(--plus-lime);
+            background: none;
+        }
+
+        .welcome-overlay h2 {
+            color: var(--hot-purple);
+            font-size: 1.1rem; /* Slightly smaller to respect container size */
+            border-bottom: 1px solid var(--plus-lime);
+            padding-bottom: 5px;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .welcome-overlay .intro-text {
+            text-align: left;
+            font-size: 0.95rem; /* Downscaled for layout rhythm */
+            margin: 15px 0;
+        }
+
+        .welcome-overlay .madeby-text {
+            color: var(--loon-blue);
+            text-align: right;
+            font-size: 0.95rem;
+        }
+
+        .welcome-overlay .instruction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .welcome-overlay .instruction-card {
+            background-color: var(--bg-deep-blue);
+            border: 1px solid var(--country-plum);
+            padding: 10px; /* Downscaled */
+            box-sizing: border-box;
+            font-size: 0.85rem; /* Downscaled */
+        }
+
+        .welcome-overlay .instruction-title {
+            color: var(--hot-purple);
+            font-weight: 900;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 6px;
+            border-bottom: 1px solid var(--electric-purple);
+            padding-bottom: 2px;
+        }
+
+        .welcome-overlay .remove-btn {
+            background: transparent;
+            color: var(--tron-orange);
+            border: 1px solid var(--tron-orange);
+            padding: 0;
+            font-weight: bold;
+            height: 28px;
+            width: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            position: absolute;
+            top: 12px; /* Adjusted to padding alignment */
+            right: 12px; /* Adjusted to padding alignment */
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: inherit;
+        }
+
+        .color-blue { color: var(--electric-cyan); font-weight: bold; }
+        .color-green { color: var(--date-mint); font-weight: bold; }
+        .color-yellow { color: var(--plus-lime); font-weight: bold; }
+        .color-orange { color: var(--tron-orange); font-weight: bold; }
+        .color-red { color: var(--action-red); font-weight: bold; }
+        .color-plum { color: var(--country-plum); font-weight: bold; }
+
     </style>
 </head>
 <body>
 
     <div class="header-container">
         <h1>WXJourney</h1>
-        <button class="info-btn">info</button>
+        <button class="info-btn" id="open-welcome-btn">info</button>
     </div>
 
     <div class="controls-container">
@@ -369,6 +486,47 @@
 
     <div id="journey-list"></div>
 
+    <!-- Integrated Welcome Panel Overlay -->
+    <div class="welcome-overlay" id="welcome-modal">
+        <div class="controls-container">
+            <button class="remove-btn" id="close-welcome-btn">X</button>
+            <h1>Welcome to <p style="margin: 0;">WXJourney</p></h1>
+            
+            <div class="intro-text">
+                <p>WXJourney allows you to create a custom forecast by date and location.</p>
+                <p>Forecast data is provided by the ECMWF.</p>
+            </div>
+
+            <h2>How to use:</h2>
+            
+            <div class="instruction-list">
+                <div class="instruction-card">
+                    <span class="instruction-title">Add a record</span>
+                    Enter a location using the <span class="color-blue">[location picker]</span>. Select a date using the <span class="color-green">[date picker]</span>. Press the <span class="color-yellow">[+]</span> button to create the record.
+                </div>
+
+                <div class="instruction-card">
+                    <span class="instruction-title">Refresh forecast</span>
+                    Use the <span class="color-red">[refresh]</span> to update forecasts. New forecasts data is available at 00:00 UTC and 12:00 UTC.
+                </div>
+
+                <div class="instruction-card">
+                    <span class="instruction-title">Edit a record</span>
+                    Change the date of an existing record by pressing the <span class="color-green">[date picker]</span>. Records automatically sort chronologically.
+                </div>
+
+                <div class="instruction-card">
+                    <span class="instruction-title">Delete a record</span>
+                    Press the <span class="color-orange">[X]</span> button in an existing record.
+                </div>
+
+                <div class="madeby-text">
+                    created by BRITOMODS
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let journeyEntries = JSON.parse(localStorage.getItem('wxjourney_v16')) || [];
         let tempUnit = 'fahrenheit'; 
@@ -381,6 +539,19 @@
         const tempToggleBtn = document.getElementById('temp-toggle-btn');
         const refreshBtn = document.getElementById('refresh-btn');
         const journeyListContainer = document.getElementById('journey-list');
+
+        // Welcome Screen DOM Bindings
+        const welcomeModal = document.getElementById('welcome-modal');
+        const openWelcomeBtn = document.getElementById('open-welcome-btn');
+        const closeWelcomeBtn = document.getElementById('close-welcome-btn');
+
+        openWelcomeBtn.addEventListener('click', () => {
+            welcomeModal.style.display = 'flex';
+        });
+
+        closeWelcomeBtn.addEventListener('click', () => {
+            welcomeModal.style.display = 'none';
+        });
 
         function convertValue(val, fromUnit, toUnit) {
             if (fromUnit === toUnit) return val;
