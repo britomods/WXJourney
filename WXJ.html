@@ -63,7 +63,6 @@
             line-height: 1.1;
         }
 
-        /* Info Button - Mirroring .remove-btn completely & shifted down 5px */
         .info-btn {
             background: transparent;
             color: var(--tron-orange);
@@ -79,8 +78,6 @@
             flex-shrink: 0; 
             cursor: pointer;
             font-family: inherit;
-            margin-bottom: 10px;
-            transform: translateY(5px); /* Lowers the button exactly 5px */
         }
 
         .controls-container {
@@ -89,7 +86,7 @@
             border: 2px solid var(--electric-purple); 
             width: 100%;
             max-width: 400px; 
-            margin-bottom: 25px;
+            margin-bottom: 10px;
             box-sizing: border-box;
         }
 
@@ -134,7 +131,7 @@
         #date-input {
             padding: 0 5px;
             background-color: var(--bg-deep-blue);
-            border: 2px solid var(--date-mint);
+            border: 1px solid var(--date-mint);
             color: var(--date-mint);
             font-family: inherit;
             font-weight: normal; 
@@ -157,8 +154,9 @@
 
         #add-btn {
             color: var(--plus-lime);
-            border: 2px solid var(--plus-lime);
+            border: 1px solid var(--plus-lime);
             font-size: 1.4rem;
+            font-weight: normal;
             padding: 0 12px;
         }
 
@@ -170,7 +168,7 @@
         /* Unit Toggle Styling */
         #temp-toggle-btn {
             color: var(--hot-pink);
-            border: 2px solid var(--hot-pink);
+            border: 1px solid var(--hot-pink);
             padding: 0 8px;
             min-width: 70px;
             display: flex;
@@ -188,9 +186,19 @@
             text-decoration: none; 
         }
 
+        #temp-toggle-btn:hover {
+            background-color: var(--hot-pink);
+            color: var(--bg-deep-blue);
+        }
+
+        .info-btn:hover {
+            background-color: var(--tron-orange);
+            color: var(--bg-deep-blue);
+        }
+
         #refresh-btn {
             color: var(--action-red);
-            border: 2px solid var(--action-red);
+            border: 1px solid var(--action-red);
             padding: 0 10px;
             font-size: 0.9rem;
             font-weight: normal; 
@@ -234,7 +242,7 @@
             max-width: 400px; 
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
         }
 
         .entry-card {
@@ -310,6 +318,10 @@
             justify-content: center;
             box-sizing: border-box;
             flex-shrink: 0; 
+        }
+        .remove-btn:hover {
+            background-color: var(--tron-orange);
+            color: var(--bg-deep-blue);
         }
 
         /* Variable width/height for results date picker */
