@@ -64,7 +64,7 @@
             color: var(--tron-orange);
             border: 1px solid var(--tron-orange);
             padding: 0;
-            font-weight: bold;
+            font-weight: normal;
             height: 28px; 
             width: 50px;
             display: flex;
@@ -490,7 +490,7 @@
     <div class="welcome-overlay" id="welcome-modal">
         <div class="controls-container">
             <button class="remove-btn" id="close-welcome-btn">X</button>
-            <h1><SPAN STYLE="FONT-WEIGHT:normal">WELCOME</SPAN>TO<p style="margin: 0;">WX<SPAN STYLE="FONT-WEIGHT:normal">JOURNEY</SPAN></p></h1>
+            <h1><SPAN STYLE="FONT-WEIGHT:100">WELCOME</SPAN>TO<p style="margin: 0;">WX<SPAN STYLE="FONT-WEIGHT:normal">JOURNEY</SPAN></p></h1>
             <div class="intro-text">
                 <p>WXJourney allows you to create a custom forecast by date and location.</p>
                 <p>Forecast data is provided by the ECMWF.</p>
@@ -638,7 +638,7 @@
                         <div class="weather-data">
                             <div class="weather-row"><span class="weather-label">AM:</span><span>${am}${unitSymbol}, ${getWeatherDescription(entry.weather.morning.code)}</span></div>
                             <div class="weather-row"><span class="weather-label">PM:</span><span>${pm}${unitSymbol}, ${getWeatherDescription(entry.weather.afternoon.code)}</span></div>
-                            <div class="weather-row"><span class="weather-label">EV:</span><span>${ev}${unitSymbol}, ${getWeatherDescription(entry.weather.evening.code)}</span></div>
+                            <div class="weather-row"><span class="weather-label">EV :</span><span>${ev}${unitSymbol}, ${getWeatherDescription(entry.weather.evening.code)}</span></div>
                         </div>
                     `;
                 }
