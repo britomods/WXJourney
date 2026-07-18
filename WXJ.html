@@ -462,7 +462,7 @@
 <body>
 
     <div class="header-container">
-        <h1>WXJourney</h1>
+        <h1>WX<SPAN STYLE="FONT-WEIGHT:normal">Journey</SPAN></h1>
         <button class="info-btn" id="open-welcome-btn">info</button>
     </div>
 
@@ -520,8 +520,8 @@
                     Press the <span class="color-orange">[X]</span> button in an existing record.
                 </div>
 
-                <div class="madeby-text">
-                    created by BRITOMODS
+                <div class="instruction-text madeby-text">
+                    created by <SPAN STYLE="FONT-WEIGHT:BOLD">BRITO</SPAN>MODS
                 </div>
             </div>
         </div>
@@ -649,15 +649,17 @@
                 card.innerHTML = `
                     <div class="entry-header">
                         <div class="entry-row-top">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="day-label">${dayName}</span>
+                                <input type="date" class="date-input-edit" value="${entry.date}" data-id="${entry.id}">
+                            </div>
+                            <button class="remove-btn" onclick="removeEntry('${entry.id}')">X</button>
+                        </div>
+                        <div class="entry-row-bottom">
                             <a href="http://googleusercontent.com/maps.google.com/4${entry.lat},${entry.lon}" target="_blank" class="location-link">
                                 ${entry.name}${entry.state ? ', ' + entry.state : ''}
                             </a>
                             <span class="country-text">${entry.country}</span>
-                            <button class="remove-btn" onclick="removeEntry('${entry.id}')">X</button>
-                        </div>
-                        <div class="entry-row-bottom">
-                            <span class="day-label">${dayName}</span>
-                            <input type="date" class="date-input-edit" value="${entry.date}" data-id="${entry.id}">
                         </div>
                     </div>
                     ${weatherHTML}
