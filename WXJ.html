@@ -1,5 +1,5 @@
 <!-- Location Picker Library/API: Open-Meteo Geocoding API -->
-<!-- Date Picker Library: None (Native Browser Implementation) -->
+<!-- Date Picker Library: Flatpickr JS (Range Mode) -->
 <!-- Weather Forecast Source API: Open-Meteo Weather Forecast API; source is European Centre for Medium-Range Weather Forecasts -->
 
 <!DOCTYPE html>
@@ -9,21 +9,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WXJourney</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <style>
         :root {
-            --bg-deep-blue: #0a0e29;      
-            --neon-green: #39ff14;    
-            --action-red: #FD3777;       
-            --hot-purple: #BF00FF;       
-            --electric-cyan: #00f0ff; 
-            --electric-purple: #8a2be2; 
-            --tron-orange: #ff8d00;   
-            --plus-lime: #CCFF00;        
-            --hot-pink: #f706cf;     
-            --date-mint: #00ffa3;        
+            --bg-deep-blue: #0a0e29;
+            --neon-green: #39ff14;
+            --action-red: #FD3777;
+            --hot-purple: #BF00FF;
+            --electric-cyan: #00f0ff;
+            --electric-purple: #8a2be2;
+            --tron-orange: #ff8d00;
+            --plus-lime: #CCFF00;
+            --hot-pink: #f706cf;
+            --date-mint: #00ffa3;
             --text-main: #f0f0f0;
-            --country-plum: #920075;     
-            --loon-blue: #0e5862; 
+            --country-plum: #920075;
+            --loon-blue: #347D75;
         }
 
         body {
@@ -31,7 +35,7 @@
             color: var(--text-main);
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 10px; 
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -52,14 +56,16 @@
             font-weight: 400;
             letter-spacing: 6px;
             margin-top: 0;
-            margin-bottom: 0; 
+            margin-bottom: 0;
             padding-bottom: 10px;
-            font-size: 1.5rem;           
+            font-size: 1.5rem;
             text-align: left;
             box-sizing: border-box;
-            background: linear-gradient(var(--plus-lime), var(--plus-lime)) bottom left no-repeat;
-            background-size: 195px 3px; /* Set precisely to match the pixel-width footprint of 'WXJOURNEY' text + letter-spacing */
             line-height: 1.1;
+            
+            /* Responsive underline fixes */
+            width: fit-content;
+            border-bottom: 3px solid var(--plus-lime);
         }
 
         .info-btn {
@@ -68,24 +74,23 @@
             border: 1px solid var(--tron-orange);
             padding: 0;
             font-weight: normal;
-            height: 28px; 
+            height: 28px;
             width: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
-            flex-shrink: 0; 
+            flex-shrink: 0;
             cursor: pointer;
             font-family: inherit;
         }
-        
+
         .controls-container {
             background-color: var(--bg-deep-blue);
             padding: 12px;
-            /* This is the thin line below the location picker */
-            border: 1px solid var(--electric-purple); 
+            border: 1px solid var(--electric-purple);
             width: 100%;
-            max-width: 400px; 
+            max-width: 400px;
             margin-bottom: 10px;
             box-sizing: border-box;
         }
@@ -99,12 +104,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 5px; 
+            gap: 6px;
         }
 
         .date-plus-group {
             display: flex;
-            gap: 5px;
+            gap: 6px;
             align-items: center;
         }
 
@@ -128,20 +133,18 @@
             justify-content: center;
         }
 
+        /* Single Date Picker Input Styling */
         #date-input {
-            padding: 0 5px;
+            padding: 0 6px;
             background-color: var(--bg-deep-blue);
             border: 1px solid var(--date-mint);
             color: var(--date-mint);
             font-family: inherit;
-            font-weight: normal; 
-            width: 110px; 
-            font-size: 0.7rem; 
+            font-weight: normal;
+            width: 150px;
+            font-size: 0.72rem;
             text-align: center;
-        }
-
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(0.8) sepia(1) saturate(5) hue-rotate(100deg);
+            cursor: pointer;
         }
 
         button {
@@ -155,26 +158,22 @@
         #add-btn {
             color: var(--plus-lime);
             border: 1px solid var(--plus-lime);
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: normal;
-            padding: 0 12px;
-        }
-/*
-        #add-btn:hover {
-            background-color: var(--plus-lime);
-            color: var(--bg-deep-blue);
+            padding: 0 10px;
+            width: 38px;        
         }
 
         /* Unit Toggle Styling */
         #temp-toggle-btn {
             color: var(--hot-pink);
             border: 1px solid var(--hot-pink);
-            padding: 0 8px;
-            min-width: 70px;
+            padding: 0 6px;
+            min-width: 60px;
             display: flex;
-            gap: 6px;
+            gap: 4px;
         }
-        
+
         #temp-toggle-btn span {
             font-weight: normal;
             transition: all 0.2s;
@@ -182,35 +181,18 @@
 
         #temp-toggle-btn .active-unit {
             font-weight: 900;
-            font-size: 1.3rem; 
-            text-decoration: none; 
+            font-size: 1.2rem;
+            text-decoration: none;
         }
-
-        /*
-        #temp-toggle-btn:hover {
-            background-color: var(--hot-pink);
-            color: var(--bg-deep-blue);
-        }
-        */
-        /*
-        .info-btn:hover {
-            background-color: var(--tron-orange);
-            color: var(--bg-deep-blue);
-        }*/
 
         #refresh-btn {
             color: var(--action-red);
             border: 1px solid var(--action-red);
-            padding: 0 10px;
-            font-size: 0.9rem;
-            font-weight: normal; 
+            padding: 0 8px;
+            font-size: 0.85rem;
+            font-weight: normal;
         }
-/*
-        #refresh-btn:hover {
-            background-color: var(--action-red);
-            color: var(--bg-deep-blue);
-        }
-*/
+
         #suggestions {
             position: absolute;
             top: 100%;
@@ -241,7 +223,7 @@
         /* Journey Cards */
         #journey-list {
             width: 100%;
-            max-width: 400px; 
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -249,18 +231,18 @@
 
         .entry-card {
             background-color: var(--bg-deep-blue);
-            border: 1px solid var(--electric-purple); 
-            padding: 8px; 
+            border: 1px solid var(--electric-purple);
+            padding: 8px;
             box-sizing: border-box;
         }
 
         .entry-header {
             display: flex;
             flex-direction: column;
-            gap: 6px; 
-            margin-bottom: 8px; 
+            gap: 6px;
+            margin-bottom: 8px;
             border-bottom: 1px solid var(--plus-lime);
-            padding-bottom: 6px; 
+            padding-bottom: 6px;
         }
 
         .entry-row-top {
@@ -277,12 +259,12 @@
             gap: 10px;
         }
 
-        .location-link {
+        .location-text {
             color: var(--electric-cyan);
             text-decoration: none;
-            font-size: 0.9rem; 
+            font-size: 0.9rem;
             font-weight: bold;
-            flex: 1; 
+            flex: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -290,10 +272,10 @@
 
         .country-text {
             color: var(--hot-pink);
-            font-size: 0.9rem; 
+            font-size: 0.9rem;
             display: block;
             font-weight: bold;
-            flex: 1; 
+            flex: 1;
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
@@ -303,8 +285,8 @@
 
         .day-label {
             color: var(--date-mint);
-            font-weight: normal; 
-            font-size: 0.9rem; 
+            font-weight: normal;
+            font-size: 0.9rem;
         }
 
         .remove-btn {
@@ -313,56 +295,57 @@
             border: 1px solid var(--tron-orange);
             padding: 0;
             font-weight: bold;
-            height: 28px; 
+            height: 28px;
             width: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
-            flex-shrink: 0; 
+            flex-shrink: 0;
         }
- /*       .remove-btn:hover {
-            background-color: var(--tron-orange);
-            color: var(--bg-deep-blue);
-        } */
 
-        /* Variable width/height for results date picker */
-        input[type="date"].date-input-edit {
+        input.date-input-edit {
             background: transparent;
             border: 1px solid var(--date-mint);
             color: var(--date-mint);
             padding: 2px 4px;
             font-family: inherit;
-            height: auto; 
+            height: auto;
             min-height: 24px;
-            width: fit-content; 
+            width: fit-content;
             max-width: 125px;
             box-sizing: border-box;
-            font-weight: normal; 
-            font-size: 0.7rem; 
+            font-weight: normal;
+            font-size: 0.7rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) sepia(1) saturate(5) hue-rotate(100deg);
         }
 
         .weather-data {
             font-size: 0.95rem;
             display: flex;
             flex-direction: column;
-            gap: 0px; 
+            gap: 0px;
         }
 
-        .weather-row { 
-            display: flex; 
-            padding: 2px 0; 
+        .weather-row {
+            display: flex;
+            padding: 2px 0;
         }
 
         .weather-label {
-            width: 45px; 
+            width: 45px;
             color: var(--hot-purple);
-            font-weight: normal; 
+            font-weight: normal;
         }
 
-        /* Styling for the Integrated Welcome Modal Overlay Scaled Down */
+        /* Welcome Overlay */
         .welcome-overlay {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -371,18 +354,18 @@
             background-color: rgba(10, 14, 41, 0.9);
             z-index: 1000;
             overflow-y: auto;
-            padding: 10px; /* Matched to main body padding */
+            padding: 10px;
             box-sizing: border-box;
             align-items: center;
             justify-content: center;
         }
 
         .welcome-overlay .controls-container {
-            background-color: var(--bg-deep-blue); /* Swapped to panel-bg to match the control panel */
-            padding: 12px; /* Downscaled from 25px to match operational panel */
+            background-color: var(--bg-deep-blue);
+            padding: 12px;
             border: 2px solid var(--electric-purple);
             width: 100%;
-            max-width: 400px; /* Scaled down from 500px to perfectly match operational view */
+            max-width: 400px;
             box-sizing: border-box;
             margin-top: 0;
             position: relative;
@@ -404,7 +387,7 @@
 
         .welcome-overlay h2 {
             color: var(--electric-cyan);
-            font-size: 1.1rem; /* Slightly smaller to respect container size */
+            font-size: 1.1rem;
             border-bottom: 1px solid var(--plus-lime);
             padding-bottom: 5px;
             margin-top: 15px;
@@ -414,7 +397,7 @@
 
         .welcome-overlay .intro-text {
             text-align: left;
-            font-size: 0.95rem; /* Downscaled for layout rhythm */
+            font-size: 0.95rem;
             margin: 15px 0;
         }
 
@@ -433,9 +416,9 @@
         .welcome-overlay .instruction-card {
             background-color: var(--bg-deep-blue);
             border: 1px solid var(--country-plum);
-            padding: 10px; /* Downscaled */
+            padding: 10px;
             box-sizing: border-box;
-            font-size: 0.85rem; /* Downscaled */
+            font-size: 0.85rem;
         }
 
         .welcome-overlay .instruction-title {
@@ -462,8 +445,8 @@
             box-sizing: border-box;
             flex-shrink: 0;
             position: absolute;
-            top: 12px; /* Adjusted to padding alignment */
-            right: 12px; /* Adjusted to padding alignment */
+            top: 12px;
+            right: 12px;
             cursor: pointer;
             text-transform: uppercase;
             font-family: inherit;
@@ -475,224 +458,291 @@
         .color-orange { color: var(--tron-orange); font-weight: bold; }
         .color-red { color: var(--action-red); font-weight: bold; }
         .color-plum { color: var(--country-plum); font-weight: bold; }
+        .color-pink { color: var(--hot-pink); font-weight: bold; }
+
+        /* Custom Outrun Styling for Flatpickr Calendar Popup */
+        .flatpickr-calendar {
+            background-color: var(--bg-deep-blue) !important;
+            border: 1px solid var(--electric-purple) !important;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5) !important;
+        }
+        .flatpickr-day {
+            color: var(--text-main) !important;
+        }
+        .flatpickr-day:hover, .flatpickr-day:focus {
+            background: var(--electric-purple) !important;
+            border-color: var(--electric-purple) !important;
+        }
+        .flatpickr-day.selected, 
+        .flatpickr-day.startRange, 
+        .flatpickr-day.endRange,
+        .flatpickr-day.selected.inRange,
+        .flatpickr-day.startRange.inRange,
+        .flatpickr-day.endRange.inRange {
+            background: var(--date-mint) !important;
+            color: var(--bg-deep-blue) !important;
+            border-color: var(--date-mint) !important;
+            font-weight: bold !important;
+        }
+        .flatpickr-day.inRange {
+            background: rgba(0, 255, 163, 0.2) !important;
+            box-shadow: -5px 0 0 rgba(0, 255, 163, 0.2), 5px 0 0 rgba(0, 255, 163, 0.2) !important;
+            border-color: transparent !important;
+        }
+        .flatpickr-months .flatpickr-month,
+        .flatpickr-current-month .flatpickr-monthDropdown-months,
+        .flatpickr-current-month input.cur-year,
+        span.flatpickr-weekday {
+            color: var(--electric-cyan) !important;
+            fill: var(--electric-cyan) !important;
+        }
+        .flatpickr-months .flatpickr-prev-month svg, 
+        .flatpickr-months .flatpickr-next-month svg {
+            fill: var(--electric-cyan) !important;
+        }
 
     </style>
 </head>
 <body>
 
-    <div class="header-container">
-        <h1>WX<SPAN STYLE="FONT-WEIGHT:100">Journey</SPAN></h1>
-        <button class="info-btn" id="open-welcome-btn">info</button>
-    </div>
+<div class="header-container">
+    <h1>WX<SPAN STYLE="FONT-WEIGHT:100">Journey</SPAN></h1>
+    <button class="info-btn" id="open-welcome-btn">info</button>
+</div>
 
+<div class="controls-container">
+    <div class="input-group">
+        <input type="text" id="location-input" placeholder="Enter City/Town..." autocomplete="off">
+        <ul id="suggestions"></ul>
+    </div>
+    <div class="date-action-row">
+        <div class="date-plus-group">
+            <input type="text" id="date-input" placeholder="Select Date(s)..." readonly>
+            <button id="add-btn">+</button>
+        </div>
+        <button id="temp-toggle-btn">
+            <span id="label-f">° F</span>
+            <span id="label-c">° C</span>
+        </button>
+        <button id="refresh-btn">Refresh</button>
+    </div>
+</div>
+
+<div id="journey-list"></div>
+
+<!-- Integrated Welcome Panel Overlay -->
+<div class="welcome-overlay" id="welcome-modal">
     <div class="controls-container">
-        <div class="input-group">
-            <input type="text" id="location-input" placeholder="Enter City/Town..." autocomplete="off">
-            <ul id="suggestions"></ul>
+        <button class="remove-btn" id="close-welcome-btn">X</button>
+        <h1><SPAN STYLE="FONT-WEIGHT:100">WELCOME</SPAN><SPAN STYLE="FONT-WEIGHT:400">TO</SPAN>
+            <p style="margin: 0; FONT-WEIGHT:400">WX<SPAN STYLE="FONT-WEIGHT:100">JOURNEY</SPAN></p></h1>
+        <div class="intro-text">
+            <p>WXJourney allows you to create a custom weather forecast by date and location.</p>
+            <p>Forecast data is provided by the ECMWF and is available 15 days in advance.</p>
         </div>
-        <div class="date-action-row">
-            <div class="date-plus-group">
-                <input type="date" id="date-input">
-                <button id="add-btn">+</button>
-            </div>
-            <button id="temp-toggle-btn">
-                <span id="label-f">° F</span>
-                <span id="label-c">° C</span>
-            </button>
-            <button id="refresh-btn">Refresh</button>
-        </div>
-    </div>
 
-    <div id="journey-list"></div>
+        <h2>How to use:</h2>
 
-    <!-- Integrated Welcome Panel Overlay -->
-    <div class="welcome-overlay" id="welcome-modal">
-        <div class="controls-container">
-            <button class="remove-btn" id="close-welcome-btn">X</button>
-            <h1><SPAN STYLE="FONT-WEIGHT:100">WELCOME</SPAN><SPAN STYLE="FONT-WEIGHT:400">TO</SPAN>
-                <p style="margin: 0; FONT-WEIGHT:400">WX<SPAN STYLE="FONT-WEIGHT:100">JOURNEY</SPAN></p></h1>
-            <div class="intro-text">
-                <p>WXJourney allows you to create a custom weather forecast by date and location.</p>
-                <p>Forecast data is provided by the ECMWF and is available 15 days in advance.</p>
+        <div class="instruction-list">
+            <div class="instruction-card">
+                <span class="instruction-title">Add record(s)</span>
+                Enter a location using the <span class="color-blue">[location picker]</span>. Select a single date or date range in the <span class="color-green">[date picker]</span>. Press <span class="color-yellow">[+]</span> to create the record(s).
             </div>
 
-            <h2>How to use:</h2>
-            
-            <div class="instruction-list">
-                <div class="instruction-card">
-                    <span class="instruction-title">Add a record</span>
-                    Enter a location using the <span class="color-blue">[location picker]</span>. Select a date using the <span class="color-green">[date picker]</span>. Press the <span class="color-yellow">[+]</span> button to create the record.
-                </div>
+            <div class="instruction-card">
+                <span class="instruction-title">Refresh forecast</span>
+                Use <span class="color-red">[refresh]</span> to update the forecasts. New forecast data is available at 00:00, 06:00, 12:00, and 18:00 UTC.
+            </div>
 
-                <div class="instruction-card">
-                    <span class="instruction-title">Refresh forecast</span>
-                    Use the <span class="color-red">[refresh]</span> to update your forecast. New forecast data is available at 00:00 UTC and 12:00 UTC.
-                </div>
+            <div class="instruction-card">
+                <span class="instruction-title">Change Temperature Unit</span>
+                Tap <span class="color-pink">[°F °C]</span> to toggle the displayed unit.
+            </div>
 
-                <div class="instruction-card">
-                    <span class="instruction-title">Edit a record</span>
-                    Change the date of an existing record by pressing the <span class="color-green">[date picker]</span>. Records automatically sort chronologically.
-                </div>
+            <div class="instruction-card">
+                <span class="instruction-title">Edit a record</span>
+                Change the date of an existing record by pressing the <span class="color-green">[date picker]</span>. Records automatically sort chronologically.
+            </div>
 
-                <div class="instruction-card">
-                    <span class="instruction-title">Delete a record</span>
-                    Press the <span class="color-orange">[X]</span> button in an existing record.
-                </div>
+            <div class="instruction-card">
+                <span class="instruction-title">Delete a record</span>
+                Press <span class="color-orange">[X]</span> in an existing record to delete the record.
+            </div>
 
-                <div class="instruction-text madeby-text">
-                    <SPAN STYLE="FONT-WEIGHT:300">created by </SPAN><SPAN STYLE="FONT-WEIGHT:bold">BRITO</SPAN><SPAN STYLE="FONT-WEIGHT:300">MODS</SPAN>
-                </div>
+            <div class="instruction-text madeby-text">
+                <SPAN STYLE="FONT-WEIGHT:300">created by </SPAN><SPAN STYLE="FONT-WEIGHT:bold">BRITO</SPAN><SPAN STYLE="FONT-WEIGHT:300">MODS</SPAN>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        let journeyEntries = JSON.parse(localStorage.getItem('wxjourney_v16')) || [];
-        let tempUnit = 'fahrenheit'; 
-        let selectedLocationInfo = null;
+<!-- Flatpickr JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-        const locationInput = document.getElementById('location-input');
-        const suggestionsList = document.getElementById('suggestions');
-        const dateInput = document.getElementById('date-input');
-        const addBtn = document.getElementById('add-btn');
-        const tempToggleBtn = document.getElementById('temp-toggle-btn');
-        const refreshBtn = document.getElementById('refresh-btn');
-        const journeyListContainer = document.getElementById('journey-list');
+<script>
+    let journeyEntries = JSON.parse(localStorage.getItem('wxjourney_v16')) || [];
+    let tempUnit = 'fahrenheit';
+    let selectedLocationInfo = null;
 
-        // Welcome Screen DOM Bindings
-        const welcomeModal = document.getElementById('welcome-modal');
-        const openWelcomeBtn = document.getElementById('open-welcome-btn');
-        const closeWelcomeBtn = document.getElementById('close-welcome-btn');
+    const locationInput = document.getElementById('location-input');
+    const suggestionsList = document.getElementById('suggestions');
+    const addBtn = document.getElementById('add-btn');
+    const tempToggleBtn = document.getElementById('temp-toggle-btn');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const journeyListContainer = document.getElementById('journey-list');
 
-        openWelcomeBtn.addEventListener('click', () => {
-            welcomeModal.style.display = 'flex';
-        });
+    // Welcome Screen DOM Bindings
+    const welcomeModal = document.getElementById('welcome-modal');
+    const openWelcomeBtn = document.getElementById('open-welcome-btn');
+    const closeWelcomeBtn = document.getElementById('close-welcome-btn');
 
-        closeWelcomeBtn.addEventListener('click', () => {
-            welcomeModal.style.display = 'none';
-        });
-
-        function convertValue(val, fromUnit, toUnit) {
-            if (fromUnit === toUnit) return val;
-            if (toUnit === 'celsius') {
-                return Math.round((val - 32) * 5 / 9);
-            } else {
-                return Math.round((val * 9 / 5) + 32);
+// Initialize Flatpickr in Range Mode with Single-Tap Auto-Complete
+    const datePicker = flatpickr("#date-input", {
+        mode: "range",
+        dateFormat: "Y-m-d",
+        conjunction: " to ",
+        onClose: function(selectedDates, dateStr, instance) {
+            // If only 1 date was tapped when closing or clicking away,
+            // automatically set end date to match start date
+            if (selectedDates.length === 1) {
+                instance.setDate([selectedDates[0], selectedDates[0]], true);
             }
         }
+    });
 
-        function updateToggleDisplay() {
-            const f = document.getElementById('label-f');
-            const c = document.getElementById('label-c');
-            if (tempUnit === 'fahrenheit') {
-                f.className = 'active-unit';
-                c.className = '';
-            } else {
-                f.className = '';
-                c.className = 'active-unit';
+    openWelcomeBtn.addEventListener('click', () => {
+        welcomeModal.style.display = 'flex';
+    });
+
+    closeWelcomeBtn.addEventListener('click', () => {
+        welcomeModal.style.display = 'none';
+    });
+
+    function convertValue(val, fromUnit, toUnit) {
+        if (fromUnit === toUnit) return val;
+        if (toUnit === 'celsius') {
+            return Math.round((val - 32) * 5 / 9);
+        } else {
+            return Math.round((val * 9 / 5) + 32);
+        }
+    }
+
+    function updateToggleDisplay() {
+        const f = document.getElementById('label-f');
+        const c = document.getElementById('label-c');
+        if (tempUnit === 'fahrenheit') {
+            f.className = 'active-unit';
+            c.className = '';
+        } else {
+            f.className = '';
+            c.className = 'active-unit';
+        }
+    }
+
+    function getWeatherDescription(code) {
+        const codes = {
+            0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+            45: 'Fog', 51: 'Light drizzle', 61: 'Slight rain', 63: 'Moderate rain',
+            71: 'Slight snow', 80: 'Rain showers', 95: 'Thunderstorm'
+        };
+        return codes[code] || 'Fair';
+    }
+
+    locationInput.addEventListener('input', async (e) => {
+        const query = e.target.value.trim();
+        if (query.length < 2) { suggestionsList.style.display = 'none'; return; }
+        try {
+            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5`);
+            const data = await res.json();
+            suggestionsList.innerHTML = '';
+            if (data.results) {
+                data.results.forEach(p => {
+                    const li = document.createElement('li');
+                    const stateStr = p.admin1 ? `, ${p.admin1}` : '';
+                    li.textContent = `${p.name}${stateStr} (${p.country})`;
+                    li.onclick = () => {
+                        locationInput.value = `${p.name}${stateStr}`;
+                        selectedLocationInfo = { name: p.name, state: p.admin1 || '', country: p.country, lat: p.latitude, lon: p.longitude };
+                        suggestionsList.style.display = 'none';
+                    };
+                    suggestionsList.appendChild(li);
+                });
+                suggestionsList.style.display = 'block';
             }
-        }
+        } catch (err) { console.error(err); }
+    });
 
-        function getWeatherDescription(code) {
-            const codes = {
-                0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
-                45: 'Fog', 51: 'Light drizzle', 61: 'Slight rain', 63: 'Moderate rain',
-                71: 'Slight snow', 80: 'Rain showers', 95: 'Thunderstorm'
-            };
-            return codes[code] || 'Fair';
-        }
+    async function fetchWeather(lat, lon, dateStr) {
+        try {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${dateStr}&end_date=${dateStr}&hourly=temperature_2m,weathercode&temperature_unit=${tempUnit}&timezone=auto`;
+            const res = await fetch(url);
+            const data = await res.json();
+            const h = data.hourly;
+            const getH = (idx) => ({ temp: Math.round(h.temperature_2m[idx]), code: h.weathercode[idx] });
+            return { morning: getH(8), afternoon: getH(14), evening: getH(20), unit: tempUnit };
+        } catch (err) { return null; }
+    }
 
-        locationInput.addEventListener('input', async (e) => {
-            const query = e.target.value.trim();
-            if (query.length < 2) { suggestionsList.style.display = 'none'; return; }
-            try {
-                const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5`);
-                const data = await res.json();
-                suggestionsList.innerHTML = '';
-                if (data.results) {
-                    data.results.forEach(p => {
-                        const li = document.createElement('li');
-                        const stateStr = p.admin1 ? `, ${p.admin1}` : '';
-                        li.textContent = `${p.name}${stateStr} (${p.country})`;
-                        li.onclick = () => {
-                            locationInput.value = `${p.name}${stateStr}`;
-                            selectedLocationInfo = { name: p.name, state: p.admin1 || '', country: p.country, lat: p.latitude, lon: p.longitude };
-                            suggestionsList.style.display = 'none';
-                        };
-                        suggestionsList.appendChild(li);
-                    });
-                    suggestionsList.style.display = 'block';
-                }
-            } catch (err) { console.error(err); }
-        });
+    function renderList() {
+        journeyEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+        localStorage.setItem('wxjourney_v16', JSON.stringify(journeyEntries));
+        journeyListContainer.innerHTML = '';
 
-        async function fetchWeather(lat, lon, dateStr) {
-            try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${dateStr}&end_date=${dateStr}&hourly=temperature_2m,weathercode&temperature_unit=${tempUnit}`;
-                const res = await fetch(url);
-                const data = await res.json();
-                const h = data.hourly;
-                const getH = (idx) => ({ temp: Math.round(h.temperature_2m[idx]), code: h.weathercode[idx] });
-                return { morning: getH(8), afternoon: getH(14), evening: getH(20), unit: tempUnit };
-            } catch (err) { return null; }
-        }
+        journeyEntries.forEach(entry => {
+            const dateObj = new Date(entry.date + 'T00:00:00');
+            const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
 
-        function renderList() {
-            journeyEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
-            localStorage.setItem('wxjourney_v16', JSON.stringify(journeyEntries));
-            journeyListContainer.innerHTML = '';
+            let weatherHTML = `<div class="weather-data"><span style="color:var(--tron-orange); font-size: 0.8rem; padding: 2px 0;">Date outside of forecast range...</span></div>`;
 
-            journeyEntries.forEach(entry => {
-                const dateObj = new Date(entry.date + 'T00:00:00');
-                const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
-                
-                let weatherHTML = `<div class="weather-data"><span style="color:var(--tron-orange); font-size: 0.8rem; padding: 2px 0;">Updating weather...</span></div>`;
+            if (entry.weather) {
+                const unitSymbol = tempUnit === 'fahrenheit' ? '° F' : '° C';
+                const am = convertValue(entry.weather.morning.temp, entry.weather.unit, tempUnit);
+                const pm = convertValue(entry.weather.afternoon.temp, entry.weather.unit, tempUnit);
+                const ev = convertValue(entry.weather.evening.temp, entry.weather.unit, tempUnit);
 
-                if (entry.weather) {
-                    const unitSymbol = tempUnit === 'fahrenheit' ? '° F' : '° C';
-                    const am = convertValue(entry.weather.morning.temp, entry.weather.unit, tempUnit);
-                    const pm = convertValue(entry.weather.afternoon.temp, entry.weather.unit, tempUnit);
-                    const ev = convertValue(entry.weather.evening.temp, entry.weather.unit, tempUnit);
-
-                    weatherHTML = `
-                        <div class="weather-data">
-                            <div class="weather-row"><span class="weather-label">AM:</span><span>${am}${unitSymbol}, ${getWeatherDescription(entry.weather.morning.code)}</span></div>
-                            <div class="weather-row"><span class="weather-label">PM:</span><span>${pm}${unitSymbol}, ${getWeatherDescription(entry.weather.afternoon.code)}</span></div>
-                            <div class="weather-row"><span class="weather-label">EV :</span><span>${ev}${unitSymbol}, ${getWeatherDescription(entry.weather.evening.code)}</span></div>
-                        </div>
-                    `;
-                }
-
-                const card = document.createElement('div');
-                card.className = 'entry-card';
-                card.innerHTML = `
-                    <div class="entry-header">
-                        <div class="entry-row-top">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span class="day-label">${dayName}</span>
-                                <input type="date" class="date-input-edit" value="${entry.date}" data-id="${entry.id}">
-                            </div>
-                            <button class="remove-btn" onclick="removeEntry('${entry.id}')">X</button>
-                        </div>
-                        <div class="entry-row-bottom">
-                            <a href="http://googleusercontent.com/maps.google.com/4${entry.lat},${entry.lon}" target="_blank" class="location-link">
-                                ${entry.name}${entry.state ? ', ' + entry.state : ''}
-                            </a>
-                            <span class="country-text">${entry.country}</span>
-                        </div>
+                weatherHTML = `
+                    <div class="weather-data">
+                        <div class="weather-row"><span class="weather-label">AM:</span><span>${am}${unitSymbol}, ${getWeatherDescription(entry.weather.morning.code)}</span></div>
+                        <div class="weather-row"><span class="weather-label">PM:</span><span>${pm}${unitSymbol}, ${getWeatherDescription(entry.weather.afternoon.code)}</span></div>
+                        <div class="weather-row"><span class="weather-label">EV :</span><span>${ev}${unitSymbol}, ${getWeatherDescription(entry.weather.evening.code)}</span></div>
                     </div>
-                    ${weatherHTML}
                 `;
-                journeyListContainer.appendChild(card);
-            });
+            }
 
-            document.querySelectorAll('.date-input-edit').forEach(input => {
-                input.addEventListener('change', async (e) => {
-                    const id = e.target.getAttribute('data-id');
+            const card = document.createElement('div');
+            card.className = 'entry-card';
+            card.innerHTML = `
+                <div class="entry-header">
+                    <div class="entry-row-top">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="day-label">${dayName}</span>
+                            <input type="text" class="date-input-edit" value="${entry.date}" data-id="${entry.id}" readonly>
+                        </div>
+                        <button class="remove-btn" onclick="removeEntry('${entry.id}')">X</button>
+                    </div>
+                    <div class="entry-row-bottom">
+                        <span class="location-text">
+                            ${entry.name}${entry.state ? ', ' + entry.state : ''}
+                        </span>
+                        <span class="country-text">${entry.country}</span>
+                    </div>
+                </div>
+                ${weatherHTML}
+            `;
+            journeyListContainer.appendChild(card);
+        });
+
+        document.querySelectorAll('.date-input-edit').forEach(input => {
+            flatpickr(input, {
+                mode: "single",
+                dateFormat: "Y-m-d",
+                defaultDate: input.value,
+                onChange: async (selectedDates, dateStr) => {
+                    const id = input.getAttribute('data-id');
                     const entry = journeyEntries.find(i => i.id === id);
-                    if (entry) {
-                        entry.date = e.target.value;
-                        entry.weather = null; 
+                    if (entry && dateStr && entry.date !== dateStr) {
+                        entry.date = dateStr;
+                        entry.weather = null;
                         renderList();
 
                         const newWeather = await fetchWeather(entry.lat, entry.lon, entry.date);
@@ -702,42 +752,70 @@
                             renderList();
                         }
                     }
-                });
+                }
+            });
+        });
+    }
+
+    addBtn.addEventListener('click', async () => {
+        const selectedDates = datePicker.selectedDates;
+        if (!selectedLocationInfo || selectedDates.length === 0) return;
+
+        const startDate = new Date(selectedDates[0]);
+        const endDate = selectedDates.length > 1 ? new Date(selectedDates[1]) : new Date(selectedDates[0]);
+
+        const datesToFetch = [];
+        let curr = new Date(startDate);
+
+        while (curr <= endDate) {
+            const yyyy = curr.getFullYear();
+            const mm = String(curr.getMonth() + 1).padStart(2, '0');
+            const dd = String(curr.getDate()).padStart(2, '0');
+            datesToFetch.push(`${yyyy}-${mm}-${dd}`);
+            curr.setDate(curr.getDate() + 1);
+        }
+
+        addBtn.textContent = "...";
+        const locInfo = { ...selectedLocationInfo };
+
+        for (const dateVal of datesToFetch) {
+            const weather = await fetchWeather(locInfo.lat, locInfo.lon, dateVal);
+            journeyEntries.push({
+                id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5),
+                ...locInfo,
+                date: dateVal,
+                weather
             });
         }
 
-        addBtn.addEventListener('click', async () => {
-            if (!selectedLocationInfo || !dateInput.value) return;
-            const weather = await fetchWeather(selectedLocationInfo.lat, selectedLocationInfo.lon, dateInput.value);
-            journeyEntries.push({ id: Date.now().toString(), ...selectedLocationInfo, date: dateInput.value, weather });
-            
-            locationInput.value = ''; 
-            dateInput.value = ''; 
-            selectedLocationInfo = null;
-            
-            renderList();
-        });
+        locationInput.value = '';
+        datePicker.clear();
+        selectedLocationInfo = null;
+        addBtn.textContent = "+";
 
-        tempToggleBtn.addEventListener('click', () => {
-            tempUnit = (tempUnit === 'fahrenheit') ? 'celsius' : 'fahrenheit';
-            updateToggleDisplay();
-            renderList();
-        });
+        renderList();
+    });
 
-        window.removeEntry = (id) => {
-            journeyEntries = journeyEntries.filter(e => e.id !== id);
-            renderList();
-        };
-
-        refreshBtn.addEventListener('click', async () => {
-            refreshBtn.textContent = "WAIT";
-            for (let e of journeyEntries) { e.weather = await fetchWeather(e.lat, e.lon, e.date); }
-            refreshBtn.textContent = "REFRESH";
-            renderList();
-        });
-
+    tempToggleBtn.addEventListener('click', () => {
+        tempUnit = (tempUnit === 'fahrenheit') ? 'celsius' : 'fahrenheit';
         updateToggleDisplay();
         renderList();
-    </script>
+    });
+
+    window.removeEntry = (id) => {
+        journeyEntries = journeyEntries.filter(e => e.id !== id);
+        renderList();
+    };
+
+    refreshBtn.addEventListener('click', async () => {
+        refreshBtn.textContent = "WAIT";
+        for (let e of journeyEntries) { e.weather = await fetchWeather(e.lat, e.lon, e.date); }
+        refreshBtn.textContent = "REFRESH";
+        renderList();
+    });
+
+    updateToggleDisplay();
+    renderList();
+</script>
 </body>
 </html>
