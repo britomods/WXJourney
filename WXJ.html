@@ -335,12 +335,21 @@
         .weather-row {
             display: flex;
             padding: 2px 0;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .weather-label {
-            width: 45px;
+            width: 35px;
             color: var(--hot-purple);
             font-weight: normal;
+            flex-shrink: 0;
+        }
+
+        .weather-row span:not(.weather-label) {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* Welcome Overlay */
@@ -683,8 +692,25 @@
             const res = await fetch(url);
             const data = await res.json();
             const h = data.hourly;
-            const getH = (idx) => ({ temp: Math.round(h.temperature_2m[idx]), code: h.weathercode[idx] });
-            return { morning: getH(8), afternoon: getH(14), evening: getH(20), unit: tempUnit };
+
+            // Helper function to extract unique weather descriptions in an index range
+            const getRangeDesc = (startIdx, endIdx) => {
+                const uniqueDescs = [];
+                for (let i = startIdx; i <= endIdx; i++) {
+                    const desc = getWeatherDescription(h.weathercode[i]);
+                    if (!uniqueDescs.includes(desc)) {
+                        uniqueDescs.push(desc);
+                    }
+                }
+                return uniqueDescs.join(', ');
+            };
+        /*Gets weather descriptors for each 6 hour range, duplicates removed*/
+            return {
+                morning: { temp: Math.round(h.temperature_2m[8]), desc: getRangeDesc(8, 13) },    // 8 AM - 1 PM
+                afternoon: { temp: Math.round(h.temperature_2m[14]), desc: getRangeDesc(14, 19) }, // 2 PM - 7 PM
+                evening: { temp: Math.round(h.temperature_2m[20]), desc: getRangeDesc(20, 23) },   // 8 PM - 11 PM/Midnight
+                unit: tempUnit
+            };
         } catch (err) { return null; }
     }
 
@@ -700,20 +726,22 @@
             let weatherHTML = `<div class="weather-data"><span style="color:var(--tron-orange); font-size: 0.8rem; padding: 2px 0;">Date outside of forecast range...</span></div>`;
 
             if (entry.weather) {
-                const unitSymbol = tempUnit === 'fahrenheit' ? '° F' : '° C';
-                const am = convertValue(entry.weather.morning.temp, entry.weather.unit, tempUnit);
-                const pm = convertValue(entry.weather.afternoon.temp, entry.weather.unit, tempUnit);
-                const ev = convertValue(entry.weather.evening.temp, entry.weather.unit, tempUnit);
+            const unitSymbol = tempUnit === 'fahrenheit' ? '° F' : '° C';
+            const am = convertValue(entry.weather.morning.temp, entry.weather.unit, tempUnit);
+            const pm = convertValue(entry.weather.afternoon.temp, entry.weather.unit, tempUnit);
+            const ev = convertValue(entry.weather.evening.temp, entry.weather.unit, tempUnit);
 
-                weatherHTML = `
-                    <div class="weather-data">
-                        <div class="weather-row"><span class="weather-label">AM:</span><span>${am}${unitSymbol}, ${getWeatherDescription(entry.weather.morning.code)}</span></div>
-                        <div class="weather-row"><span class="weather-label">PM:</span><span>${pm}${unitSymbol}, ${getWeatherDescription(entry.weather.afternoon.code)}</span></div>
-                        <div class="weather-row"><span class="weather-label">EV :</span><span>${ev}${unitSymbol}, ${getWeatherDescription(entry.weather.evening.code)}</span></div>
-                    </div>
-                `;
-            }
+            // Fallback to single code if record was saved before this update
+            const getDesc = (period) => period.desc || getWeatherDescription(period.code);
 
+            weatherHTML = `
+                <div class="weather-data">
+                    <div class="weather-row"><span class="weather-label">AM:</span><span>${am}${unitSymbol}, ${getDesc(entry.weather.morning)}</span></div>
+                    <div class="weather-row"><span class="weather-label">PM:</span><span>${pm}${unitSymbol}, ${getDesc(entry.weather.afternoon)}</span></div>
+                    <div class="weather-row"><span class="weather-label">EV :</span><span>${ev}${unitSymbol}, ${getDesc(entry.weather.evening)}</span></div>
+                </div>
+            `;
+        }
             const card = document.createElement('div');
             card.className = 'entry-card';
             card.innerHTML = `
