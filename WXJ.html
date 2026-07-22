@@ -1,6 +1,6 @@
 <!-- Location Picker Library/API: Open-Meteo Geocoding API -->
 <!-- Date Picker Library: Flatpickr JS (Range Mode) -->
-<!-- Weather Forecast Source API: Open-Meteo Weather Forecast API; source is European Centre for Medium-Range Weather Forecasts -->
+<!-- Weather Forecast Source API: NOAA / NWS API (US locations within forecast window) & Open-Meteo Weather Forecast API (Fallback & Non-US locations) -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -250,6 +250,7 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
+            gap: 10px;
         }
 
         .entry-row-bottom {
@@ -265,6 +266,7 @@
             font-size: 0.9rem;
             font-weight: bold;
             flex: 1;
+            min-width: 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -276,6 +278,7 @@
             display: block;
             font-weight: bold;
             flex: 1;
+            min-width: 0;
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
@@ -287,6 +290,14 @@
             color: var(--date-mint);
             font-weight: normal;
             font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .source-label {
+            color: var(--loon-blue);
+            font-weight: normal;
+            font-size: 0.9rem;
+            text-align: center;
         }
 
         .remove-btn {
@@ -337,6 +348,11 @@
             padding: 2px 0;
             white-space: nowrap;
             overflow: hidden;
+        }
+
+        /* Desaturates elapsed weather time periods */
+        .weather-row.past {
+            opacity: 0.65;
         }
 
         .weather-label {
@@ -436,7 +452,7 @@
         }
 
         .welcome-overlay .instruction-title {
-            color: var(--hot-purple);
+            color: var(--electric-cyan);
             font-weight: 900;
             text-transform: uppercase;
             display: block;
@@ -552,7 +568,6 @@
             <p style="margin: 0; FONT-WEIGHT:400">WX<SPAN STYLE="FONT-WEIGHT:100">JOURNEY</SPAN></p></h1>
         <div class="intro-text">
             <p>WXJourney allows you to create a custom weather forecast by date and location.</p>
-            <p>Forecast data is provided by the ECMWF and is available 15 days in advance.</p>
         </div>
 
         <h2>How to use:</h2>
@@ -582,11 +597,17 @@
                 <span class="instruction-title">Delete a record</span>
                 Press <span class="color-orange">[X]</span> in an existing record to delete the record.
             </div>
-
-            <div class="instruction-text madeby-text">
-                <SPAN STYLE="FONT-WEIGHT:300">created by </SPAN><SPAN STYLE="FONT-WEIGHT:bold">BRITO</SPAN><SPAN STYLE="FONT-WEIGHT:300">MODS</SPAN>
-            </div>
         </div>
+        <div class="intro-text">
+        <p>Forecast data is provided by the National Weather Service (NWS) and the European Centre for Medium-Range Weather Forecasts (ECMWF).</p>
+        <p>NWS date is available for 7 days from the current date and is used for locations within the U.S.</p>
+        <p>ECMWF data is available for 15 days from the current date and is used for locations outside of the U.S. or when NWS data is not available.</p>
+        <p>The temperatures displayed for AM, PM, and EV are the predicted temperatures for 8AM, 2PM, and 8PM respectively.</p>
+        <p>The weather conditions displayed are for a range of six hours after the start of the respective time period.</p>
+        </div>
+        <div class="instruction-text madeby-text">
+        <SPAN STYLE="FONT-WEIGHT:300">created by </SPAN><SPAN STYLE="FONT-WEIGHT:bold">BRITO</SPAN><SPAN STYLE="FONT-WEIGHT:300">MODS</SPAN>
+    </div>
     </div>
 </div>
 
@@ -610,14 +631,12 @@
     const openWelcomeBtn = document.getElementById('open-welcome-btn');
     const closeWelcomeBtn = document.getElementById('close-welcome-btn');
 
-// Initialize Flatpickr in Range Mode with Single-Tap Auto-Complete
+    // Initialize Flatpickr in Range Mode with Single-Tap Auto-Complete
     const datePicker = flatpickr("#date-input", {
         mode: "range",
         dateFormat: "Y-m-d",
         conjunction: " to ",
         onClose: function(selectedDates, dateStr, instance) {
-            // If only 1 date was tapped when closing or clicking away,
-            // automatically set end date to match start date
             if (selectedDates.length === 1) {
                 instance.setDate([selectedDates[0], selectedDates[0]], true);
             }
@@ -686,32 +705,136 @@
         } catch (err) { console.error(err); }
     });
 
-    async function fetchWeather(lat, lon, dateStr) {
+    async function fetchWeatherOpenMeteo(lat, lon, dateStr) {
         try {
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${dateStr}&end_date=${dateStr}&hourly=temperature_2m,weathercode&temperature_unit=${tempUnit}&timezone=auto`;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${dateStr}&end_date=${dateStr}&hourly=temperature_2m,weathercode&temperature_unit=fahrenheit&timezone=auto`;
             const res = await fetch(url);
             const data = await res.json();
             const h = data.hourly;
 
-            // Helper function to extract unique weather descriptions in an index range
             const getRangeDesc = (startIdx, endIdx) => {
                 const uniqueDescs = [];
                 for (let i = startIdx; i <= endIdx; i++) {
                     const desc = getWeatherDescription(h.weathercode[i]);
-                    if (!uniqueDescs.includes(desc)) {
-                        uniqueDescs.push(desc);
-                    }
+                    if (!uniqueDescs.includes(desc)) uniqueDescs.push(desc);
                 }
                 return uniqueDescs.join(', ');
             };
-        /*Gets weather descriptors for each 6 hour range, duplicates removed*/
+
+            const now = new Date();
+            const localTodayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            const currentHour = now.getHours();
+            const isToday = (dateStr === localTodayStr);
+
             return {
-                morning: { temp: Math.round(h.temperature_2m[8]), desc: getRangeDesc(8, 13) },    // 8 AM - 1 PM
-                afternoon: { temp: Math.round(h.temperature_2m[14]), desc: getRangeDesc(14, 19) }, // 2 PM - 7 PM
-                evening: { temp: Math.round(h.temperature_2m[20]), desc: getRangeDesc(20, 23) },   // 8 PM - 11 PM/Midnight
-                unit: tempUnit
+                morning: { temp: Math.round(h.temperature_2m[8]), desc: getRangeDesc(8, 13), isPast: isToday && currentHour >= 13 },
+                afternoon: { temp: Math.round(h.temperature_2m[14]), desc: getRangeDesc(14, 19), isPast: isToday && currentHour >= 19 },
+                evening: { temp: Math.round(h.temperature_2m[20]), desc: getRangeDesc(20, 23), isPast: isToday && currentHour >= 23 },
+                unit: 'fahrenheit',
+                source: 'ECMWF'
             };
         } catch (err) { return null; }
+    }
+
+    async function fetchWeatherNWS(lat, lon, dateStr) {
+        try {
+            const headers = { 'User-Agent': 'WXJourney (britomods118@gmail.com)' };
+
+            const pointRes = await fetch(`https://api.weather.gov/points/${lat.toFixed(4)},${lon.toFixed(4)}`, { headers });
+            if (!pointRes.ok) return null;
+            const pointData = await pointRes.json();
+
+            const hourlyUrl = pointData.properties && pointData.properties.forecastHourly;
+            if (!hourlyUrl) return null;
+
+            const forecastRes = await fetch(hourlyUrl, { headers });
+            if (!forecastRes.ok) return null;
+            const forecastData = await forecastRes.json();
+
+            const periods = forecastData.properties && forecastData.properties.periods;
+            if (!periods || !Array.isArray(periods)) return null;
+
+            const datePeriods = periods.filter(p => p.startTime.startsWith(dateStr));
+
+            // If NWS has no forecast data for this date (e.g. past 7 days), defer directly to Open-Meteo
+            if (datePeriods.length === 0) {
+                return await fetchWeatherOpenMeteo(lat, lon, dateStr);
+            }
+
+            const getPeriodData = (startHour, endHour, defaultTargetHour) => {
+                const rangePeriods = datePeriods.filter(p => {
+                    const h = parseInt(p.startTime.substring(11, 13), 10);
+                    return h >= startHour && h <= endHour;
+                });
+
+                if (rangePeriods.length === 0) return null;
+
+                const primary = rangePeriods.find(p => parseInt(p.startTime.substring(11, 13), 10) === defaultTargetHour) || rangePeriods[0];
+                const descs = [];
+                rangePeriods.forEach(p => {
+                    if (p.shortForecast && !descs.includes(p.shortForecast)) {
+                        descs.push(p.shortForecast);
+                    }
+                });
+
+                const temp = primary.temperature;
+                const unit = primary.temperatureUnit === 'C' ? 'celsius' : 'fahrenheit';
+
+                return {
+                    temp: convertValue(Math.round(temp), unit, 'fahrenheit'),
+                    desc: descs.join(', ')
+                };
+            };
+
+            let morning = getPeriodData(8, 13, 8);
+            let afternoon = getPeriodData(14, 19, 14);
+            let evening = getPeriodData(20, 23, 20);
+
+            const nwsHadData = morning || afternoon || evening;
+
+            // Backfill missing slots from Open-Meteo if NWS dropped past hours
+            if (!morning || !afternoon || !evening) {
+                const omData = await fetchWeatherOpenMeteo(lat, lon, dateStr);
+                if (omData) {
+                    if (!morning) morning = omData.morning;
+                    if (!afternoon) afternoon = omData.afternoon;
+                    if (!evening) evening = omData.evening;
+                }
+            }
+
+            if (!morning || !afternoon || !evening) return null;
+
+            // Check elapsed hours for today
+            const now = new Date();
+            const localTodayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            const currentHour = now.getHours();
+            const isToday = (dateStr === localTodayStr);
+
+            morning.isPast = isToday && currentHour >= 13;
+            afternoon.isPast = isToday && currentHour >= 19;
+            evening.isPast = isToday && currentHour >= 23;
+
+            return {
+                morning,
+                afternoon,
+                evening,
+                unit: 'fahrenheit',
+                source: nwsHadData ? 'NWS' : 'ECMWF'
+            };
+        } catch (err) {
+            return null;
+        }
+    }
+
+    async function fetchWeather(lat, lon, dateStr, country) {
+        const isUS = country && (country.includes('United States') || country === 'US' || country === 'USA');
+
+        if (isUS) {
+            const nwsData = await fetchWeatherNWS(lat, lon, dateStr);
+            if (nwsData) return nwsData;
+        }
+
+        return await fetchWeatherOpenMeteo(lat, lon, dateStr);
     }
 
     function renderList() {
@@ -722,36 +845,42 @@
         journeyEntries.forEach(entry => {
             const dateObj = new Date(entry.date + 'T00:00:00');
             const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+            const sourceText = entry.weather && entry.weather.source ? entry.weather.source : '';
 
             let weatherHTML = `<div class="weather-data"><span style="color:var(--tron-orange); font-size: 0.8rem; padding: 2px 0;">Date outside of forecast range...</span></div>`;
 
             if (entry.weather) {
-            const unitSymbol = tempUnit === 'fahrenheit' ? '° F' : '° C';
-            const am = convertValue(entry.weather.morning.temp, entry.weather.unit, tempUnit);
-            const pm = convertValue(entry.weather.afternoon.temp, entry.weather.unit, tempUnit);
-            const ev = convertValue(entry.weather.evening.temp, entry.weather.unit, tempUnit);
+                const unitSymbol = tempUnit === 'fahrenheit' ? '° F' : '° C';
+                const getDesc = (period) => period.desc || getWeatherDescription(period.code);
 
-            // Fallback to single code if record was saved before this update
-            const getDesc = (period) => period.desc || getWeatherDescription(period.code);
+                const renderRow = (label, period) => {
+                    const temp = convertValue(period.temp, entry.weather.unit, tempUnit);
+                    const pastClass = period.isPast ? ' past' : '';
+                    return `<div class="weather-row${pastClass}"><span class="weather-label">${label}:</span><span>${temp}${unitSymbol}, ${getDesc(period)}</span></div>`;
+                };
 
-            weatherHTML = `
-                <div class="weather-data">
-                    <div class="weather-row"><span class="weather-label">AM:</span><span>${am}${unitSymbol}, ${getDesc(entry.weather.morning)}</span></div>
-                    <div class="weather-row"><span class="weather-label">PM:</span><span>${pm}${unitSymbol}, ${getDesc(entry.weather.afternoon)}</span></div>
-                    <div class="weather-row"><span class="weather-label">EV :</span><span>${ev}${unitSymbol}, ${getDesc(entry.weather.evening)}</span></div>
-                </div>
-            `;
-        }
+                weatherHTML = `
+                    <div class="weather-data">
+                        ${renderRow('AM', entry.weather.morning)}
+                        ${renderRow('PM', entry.weather.afternoon)}
+                        ${renderRow('EV ', entry.weather.evening)}
+                    </div>
+                `;
+            }
+
             const card = document.createElement('div');
             card.className = 'entry-card';
             card.innerHTML = `
                 <div class="entry-header">
                     <div class="entry-row-top">
-                        <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0;">
                             <span class="day-label">${dayName}</span>
                             <input type="text" class="date-input-edit" value="${entry.date}" data-id="${entry.id}" readonly>
                         </div>
-                        <button class="remove-btn" onclick="removeEntry('${entry.id}')">X</button>
+                        <div style="display: flex; align-items: center; justify-content: center; flex: 1; min-width: 0; position: relative;">
+                            <span class="source-label">${sourceText}</span>
+                            <button class="remove-btn" onclick="removeEntry('${entry.id}')" style="position: absolute; right: 0;">X</button>
+                        </div>
                     </div>
                     <div class="entry-row-bottom">
                         <span class="location-text">
@@ -779,7 +908,7 @@
                         entry.weather = null;
                         renderList();
 
-                        const newWeather = await fetchWeather(entry.lat, entry.lon, entry.date);
+                        const newWeather = await fetchWeather(entry.lat, entry.lon, entry.date, entry.country);
                         const currentEntry = journeyEntries.find(i => i.id === id);
                         if (currentEntry && currentEntry.date === entry.date) {
                             currentEntry.weather = newWeather;
@@ -813,7 +942,7 @@
         const locInfo = { ...selectedLocationInfo };
 
         for (const dateVal of datesToFetch) {
-            const weather = await fetchWeather(locInfo.lat, locInfo.lon, dateVal);
+            const weather = await fetchWeather(locInfo.lat, locInfo.lon, dateVal, locInfo.country);
             journeyEntries.push({
                 id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5),
                 ...locInfo,
@@ -843,7 +972,7 @@
 
     refreshBtn.addEventListener('click', async () => {
         refreshBtn.textContent = "WAIT";
-        for (let e of journeyEntries) { e.weather = await fetchWeather(e.lat, e.lon, e.date); }
+        for (let e of journeyEntries) { e.weather = await fetchWeather(e.lat, e.lon, e.date, e.country); }
         refreshBtn.textContent = "REFRESH";
         renderList();
     });
