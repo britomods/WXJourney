@@ -15,22 +15,30 @@
 
     <style>
         :root {
-            --bg-sony-blue: #1A4A7C;
-            --forest-green: #4CAF50;
-            --action-red: #FF5252;
-            --dark-brown: #D7CCC8;
-            --burnt-orange: #FF9800;
-            --plus-yellow: #ffb900;
-            --pine-bark: #FFEB3B;
-            --date-mist: #E0F7FA;
-            --text-main: #f0f0f0;
-            --spruce-green: #26A69A;
-            --loon-blue: #80DEEA;
+            --background: #1A4A7C;
+            --highlighter: #39ff14;
+            --refreshbtn: #ffb900;
+            --wxtimes: #ffb900;
+            --header: #FFEB3B;
+            --cities: #FFEB3B;
+            --locbox: #00f0ff;
+            --recordborder1: #4CAF50;
+            --xbutton: #FF5252;
+            --infobutton: #FF5252;
+            --underlines: #00f0ff;
+            --tempunit: #E97DB1;
+            --country: #E97DB1;
+            --wxsource: #80DEEA; 
+            --weekday: #00ffa3;
+            --datepicker: #00ffa3;
+            --conditions: #f0f0f0;
+            --recordborder2: #80DEEA;
+            --britomods: #347D75;
         }
 
         body {
-            background-color: var(--bg-sony-blue);
-            color: var(--text-main);
+            background-color: var(--background);
+            color: var(--conditions);
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 10px;
@@ -49,9 +57,9 @@
         }
 
         h1 {
-            color: var(--forest-green);
+            color: var(--header);
             text-transform: uppercase;
-            font-weight: 500;
+            font-weight: 400;
             letter-spacing: 6px;
             margin-top: 0;
             margin-bottom: 0;
@@ -63,17 +71,17 @@
 
             /* Responsive underline fixes */
             width: fit-content;
-            border-bottom: 3px solid var(--plus-yellow);
+            border-bottom: 3px solid var(--underlines);
         }
 
         .info-btn {
             background: transparent;
-            color: var(--burnt-orange);
-            border: 2px solid var(--burnt-orange);
+            color: var(--infobutton);
+            border: 1px solid var(--infobutton);
             padding: 0;
-            font-weight: bold;
-            height: 32px;
-            width: 55px;
+            font-weight: normal;
+            height: 28px;
+            width: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -84,9 +92,9 @@
         }
 
         .controls-container {
-            background-color: var(--bg-sony-blue);
+            background-color: var(--background);
             padding: 12px;
-            border: 2px solid var(--spruce-green);
+            border: 1px solid var(--recordborder1);
             width: 100%;
             max-width: 400px;
             margin-bottom: 10px;
@@ -111,20 +119,20 @@
             align-items: center;
         }
 
-        input[type="text"] {
+        /* Main Location Input Styling */
+        #location-input {
             width: 100%;
             padding: 10px;
-            background-color: #12355B;
-            border: 2px solid var(--forest-green);
-            color: var(--text-main);
+            background-color: var(--background);
+            border: 1px solid var(--locbox);
+            color: var(--locbox);
             font-family: inherit;
             box-sizing: border-box;
             font-size: 0.9rem;
-            font-weight: 500;
         }
 
         /* Control Panel Height Matching */
-        #date-input, #add-btn, #temp-toggle-btn, #refresh-btn {
+        .date-plus-group input, #add-btn, #temp-toggle-btn, #refresh-btn {
             height: 38px;
             box-sizing: border-box;
             display: flex;
@@ -132,16 +140,16 @@
             justify-content: center;
         }
 
-        /* Single Date Picker Input Styling */
-        #date-input {
+        /* Main Control Date Picker Styling (Targets original & Flatpickr generated inputs) */
+        .date-plus-group input {
             padding: 0 6px;
-            background-color: #12355B;
-            border: 2px solid var(--date-mist);
-            color: var(--date-mist);
+            background-color: var(--background) !important;
+            border: 1px solid var(--datepicker) !important;
+            color: var(--datepicker) !important;
             font-family: inherit;
-            font-weight: bold;
+            font-weight: normal;
             width: 150px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             text-align: center;
             cursor: pointer;
         }
@@ -155,18 +163,18 @@
         }
 
         #add-btn {
-            color: var(--plus-yellow);
-            border: 2px solid var(--plus-yellow);
+            color: var(--underlines);
+            border: 1px solid var(--underlines);
             font-size: 1.2rem;
-            font-weight: bold;
+            font-weight: normal;
             padding: 0 10px;
             width: 38px;
         }
 
         /* Unit Toggle Styling */
         #temp-toggle-btn {
-            color: var(--pine-bark);
-            border: 2px solid var(--pine-bark);
+            color: var(--tempunit);
+            border: 1px solid var(--tempunit);
             padding: 0 6px;
             min-width: 60px;
             display: flex;
@@ -185,11 +193,11 @@
         }
 
         #refresh-btn {
-            color: var(--action-red);
-            border: 2px solid var(--action-red);
+            color: var(--refreshbtn);
+            border: 1px solid var(--refreshbtn);
             padding: 0 8px;
             font-size: 0.85rem;
-            font-weight: bold;
+            font-weight: normal;
         }
 
         #suggestions {
@@ -197,8 +205,8 @@
             top: 100%;
             left: 0;
             right: 0;
-            background-color: #12355B;
-            border: 2px solid var(--spruce-green);
+            background-color: var(--background);
+            border: 1px solid var(--recordborder1);
             max-height: 150px;
             overflow-y: auto;
             z-index: 100;
@@ -211,13 +219,12 @@
         #suggestions li {
             padding: 10px;
             cursor: pointer;
-            border-bottom: 1px solid var(--spruce-green);
-            color: var(--text-main);
+            border-bottom: 1px solid var(--recordborder1);
         }
 
         #suggestions li:hover {
-            background-color: var(--spruce-green);
-            color: #000;
+            background-color: var(--recordborder1);
+            color: white;
         }
 
         /* Journey Cards */
@@ -230,9 +237,9 @@
         }
 
         .entry-card {
-            background-color: var(--bg-sony-blue);
-            border: 2px solid var(--spruce-green);
-            padding: 10px;
+            background-color: var(--background);
+            border: 1px solid var(--recordborder1);
+            padding: 8px;
             box-sizing: border-box;
         }
 
@@ -241,7 +248,7 @@
             flex-direction: column;
             gap: 6px;
             margin-bottom: 8px;
-            border-bottom: 2px solid var(--plus-yellow);
+            border-bottom: 1px solid var(--underlines);
             padding-bottom: 6px;
         }
 
@@ -261,9 +268,9 @@
         }
 
         .location-text {
-            color: var(--pine-bark);
+            color: var(--cities);
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: bold;
             flex: 1;
             min-width: 0;
@@ -273,8 +280,8 @@
         }
 
         .country-text {
-            color: var(--loon-blue);
-            font-size: 0.95rem;
+            color: var(--country);
+            font-size: 0.9rem;
             display: block;
             font-weight: bold;
             flex: 1;
@@ -287,23 +294,23 @@
         }
 
         .day-label {
-            color: var(--date-mist);
-            font-weight: bold;
+            color: var(--weekday);
+            font-weight: normal;
             font-size: 0.9rem;
             white-space: nowrap;
         }
 
         .source-label {
-            color: var(--loon-blue);
-            font-weight: bold;
+            color: var(--wxsource);
+            font-weight: normal;
             font-size: 0.9rem;
             text-align: center;
         }
 
         .remove-btn {
             background: transparent;
-            color: var(--burnt-orange);
-            border: 2px solid var(--burnt-orange);
+            color: var(--xbutton);
+            border: 1px solid var(--xbutton);
             padding: 0;
             font-weight: bold;
             height: 28px;
@@ -315,40 +322,40 @@
             flex-shrink: 0;
         }
 
-        input.date-input-edit {
-            background: transparent;
-            border: 1px solid var(--date-mist);
-            color: var(--date-mist);
+        /* Edit Date Inputs inside Cards */
+        .entry-card input {
+            background: transparent !important;
+            border: 1px solid var(--datepicker) !important;
+            color: var(--datepicker) !important;
             padding: 2px 4px;
             font-family: inherit;
-            height: auto;
+            height: auto !important;
             min-height: 24px;
             width: fit-content;
             max-width: 125px;
             box-sizing: border-box;
-            font-weight: bold;
-            font-size: 0.75rem;
+            font-weight: normal;
+            font-size: 0.7rem;
             text-align: center;
             cursor: pointer;
         }
 
         input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
+            filter: invert(0.8) sepia(1) saturate(5) hue-rotate(100deg);
         }
 
         .weather-data {
             font-size: 0.95rem;
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 0px;
         }
 
         .weather-row {
             display: flex;
-            padding: 3px 0;
+            padding: 2px 0;
             white-space: nowrap;
             overflow: hidden;
-            font-weight: 500;
         }
 
         /* Desaturates elapsed weather time periods */
@@ -357,9 +364,9 @@
         }
 
         .weather-label {
-            width: 38px;
-            color: var(--plus-yellow);
-            font-weight: bold;
+            width: 35px;
+            color: var(--wxtimes);
+            font-weight: normal;
             flex-shrink: 0;
         }
 
@@ -367,7 +374,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: var(--text-main);
         }
 
         /* Welcome Overlay */
@@ -381,7 +387,7 @@
             width: 100%;
             height: 100%;
             height: 100dvh;
-            background-color: rgba(26, 74, 124, 0.95);
+            background-color: var(--background);
             z-index: 1000;
             overflow-y: auto;
             padding: 20px 10px;
@@ -392,9 +398,9 @@
         }
 
         .welcome-overlay .controls-container {
-            background-color: var(--bg-sony-blue);
+            background-color: var(--background);
             padding: 12px;
-            border: 2px solid var(--spruce-green);
+            border: 2px solid var(--recordborder1);
             width: 100%;
             max-width: 400px;
             box-sizing: border-box;
@@ -405,7 +411,7 @@
         }
 
         .welcome-overlay h1 {
-            color: var(--forest-green);
+            color: var(--header);
             text-transform: uppercase;
             letter-spacing: 6px;
             margin-top: 0;
@@ -413,14 +419,14 @@
             padding-bottom: 5px;
             font-size: 1.5rem;
             text-align: left;
-            border-bottom: 3px solid var(--plus-yellow);
+            border-bottom: 3px solid var(--underlines);
             background: none;
         }
 
         .welcome-overlay h2 {
-            color: var(--forest-green);
+            color: var(--header);
             font-size: 1.1rem;
-            border-bottom: 1px solid var(--plus-yellow);
+            border-bottom: 1px solid var(--underlines);
             padding-bottom: 5px;
             margin-top: 15px;
             text-transform: uppercase;
@@ -431,11 +437,10 @@
             text-align: left;
             font-size: 0.95rem;
             margin: 15px 0;
-            color: var(--text-main);
         }
 
         .welcome-overlay .madeby-text {
-            color: var(--loon-blue);
+            color: var(--britomods);
             text-align: right;
             font-size: 0.95rem;
         }
@@ -447,28 +452,27 @@
         }
 
         .welcome-overlay .instruction-card {
-            background-color: #12355B;
-            border: 1px solid var(--spruce-green);
+            background-color: var(--background);
+            border: 1px solid var(--recordborder2);
             padding: 10px;
             box-sizing: border-box;
             font-size: 0.85rem;
-            color: var(--text-main);
         }
 
         .welcome-overlay .instruction-title {
-            color: var(--plus-yellow);
+            color: var(--header);
             font-weight: 900;
             text-transform: uppercase;
             display: block;
             margin-bottom: 6px;
-            border-bottom: 1px solid var(--spruce-green);
+            border-bottom: 1px solid var(--recordborder1);
             padding-bottom: 2px;
         }
 
         .welcome-overlay .remove-btn {
             background: transparent;
-            color: var(--burnt-orange);
-            border: 2px solid var(--burnt-orange);
+            color: var(--xbutton);
+            border: 1px solid var(--xbutton);
             padding: 0;
             font-weight: bold;
             height: 28px;
@@ -486,28 +490,26 @@
             font-family: inherit;
         }
 
-        .color-blue { color: var(--forest-green); font-weight: bold; }
-        .color-green { color: var(--date-mist); font-weight: bold; }
-        .color-yellow { color: var(--plus-yellow); font-weight: bold; }
-        .color-orange { color: var(--burnt-orange); font-weight: bold; }
-        .color-red { color: var(--action-red); font-weight: bold; }
-        .color-plum { color: var(--spruce-green); font-weight: bold; }
-        .color-pink { color: var(--pine-bark); font-weight: bold; }
+        .color-blue { color: var(--header); font-weight: bold; }
+        .color-green { color: var(--weekday); font-weight: bold; }
+        .color-yellow { color: var(--underlines); font-weight: bold; }
+        .color-orange { color: var(--xbutton); font-weight: bold; }
+        .color-red { color: var(--refreshbtn); font-weight: bold; }
+        .color-plum { color: var(--recordborder2); font-weight: bold; }
+        .color-pink { color: var(--tempunit); font-weight: bold; }
 
-        /* Custom Theme Styling for Flatpickr Calendar Popup */
+        /* Custom Outrun Styling for Flatpickr Calendar Popup */
         .flatpickr-calendar {
-            background-color: #12355B !important;
-            border: 2px solid var(--spruce-green) !important;
-            box-shadow: 0 0 15px rgba(38, 166, 154, 0.5) !important;
+            background-color: var(--background) !important;
+            border: 1px solid var(--recordborder1) !important;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5) !important;
         }
         .flatpickr-day {
-            color: var(--text-main) !important;
-            font-weight: 500;
+            color: var(--conditions) !important;
         }
         .flatpickr-day:hover, .flatpickr-day:focus {
-            background: var(--spruce-green) !important;
-            border-color: var(--spruce-green) !important;
-            color: #000 !important;
+            background: var(--recordborder1) !important;
+            border-color: var(--recordborder1) !important;
         }
         .flatpickr-day.selected,
         .flatpickr-day.startRange,
@@ -515,26 +517,26 @@
         .flatpickr-day.selected.inRange,
         .flatpickr-day.startRange.inRange,
         .flatpickr-day.endRange.inRange {
-            background: var(--date-mist) !important;
-            color: #12355B !important;
-            border-color: var(--date-mist) !important;
+            background: var(--weekday) !important;
+            color: var(--background) !important;
+            border-color: var(--weekday) !important;
             font-weight: bold !important;
         }
         .flatpickr-day.inRange {
-            background: rgba(224, 247, 250, 0.2) !important;
+            background: rgba(0, 255, 163, 0.2) !important;
+            box-shadow: -5px 0 0 rgba(0, 255, 163, 0.2), 5px 0 0 rgba(0, 255, 163, 0.2) !important;
             border-color: transparent !important;
         }
         .flatpickr-months .flatpickr-month,
         .flatpickr-current-month .flatpickr-monthDropdown-months,
         .flatpickr-current-month input.cur-year,
         span.flatpickr-weekday {
-            color: var(--date-mist) !important;
-            fill: var(--date-mist) !important;
-            font-weight: bold !important;
+            color: var(--cities) !important;
+            fill: var(--header) !important;
         }
         .flatpickr-months .flatpickr-prev-month svg,
         .flatpickr-months .flatpickr-next-month svg {
-            fill: var(--date-mist) !important;
+            fill: var(--header) !important;
         }
 
     </style>
@@ -574,7 +576,6 @@
             <p style="margin: 0; FONT-WEIGHT:400">WX<SPAN STYLE="FONT-WEIGHT:100">JOURNEY</SPAN></p></h1>
         <div class="intro-text">
             <p>WXJourney allows you to create a custom weather forecast by date and location.</p>
-            <p>Forecast data is provided by NOAA / NWS for US locations and ECMWF via Open-Meteo.</p>
         </div>
 
         <h2>How to use:</h2>
@@ -604,11 +605,17 @@
                 <span class="instruction-title">Delete a record</span>
                 Press <span class="color-orange">[X]</span> in an existing record to delete the record.
             </div>
-
-            <div class="instruction-text madeby-text">
-                <SPAN STYLE="FONT-WEIGHT:300">created by </SPAN><SPAN STYLE="FONT-WEIGHT:bold">BRITO</SPAN><SPAN STYLE="FONT-WEIGHT:300">MODS</SPAN>
-            </div>
         </div>
+        <div class="intro-text">
+        <p>Forecast data is provided by the National Weather Service (NWS) and the European Centre for Medium-Range Weather Forecasts (ECMWF).</p>
+        <p>NWS date is available for 7 days from the current date and is used for locations within the U.S.</p>
+        <p>ECMWF data is available for 15 days from the current date and is used for locations outside of the U.S. or when NWS data is not available.</p>
+        <p>The temperatures displayed for AM, PM, and EV are the predicted temperatures for 8AM, 2PM, and 8PM respectively.</p>
+        <p>The weather conditions displayed are for a range of six hours after the start of the respective time period.</p>
+        </div>
+        <div class="instruction-text madeby-text">
+        <SPAN STYLE="FONT-WEIGHT:300">created by </SPAN><SPAN STYLE="FONT-WEIGHT:bold">BRITO</SPAN><SPAN STYLE="FONT-WEIGHT:300">MODS</SPAN>
+    </div>
     </div>
 </div>
 
@@ -632,10 +639,12 @@
     const openWelcomeBtn = document.getElementById('open-welcome-btn');
     const closeWelcomeBtn = document.getElementById('close-welcome-btn');
 
-    // Initialize Flatpickr in Range Mode with Single-Tap Auto-Complete
+    // Initialize Flatpickr in Range Mode with altInput formatting
     const datePicker = flatpickr("#date-input", {
         mode: "range",
         dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d-M-Y",
         conjunction: " to ",
         onClose: function(selectedDates, dateStr, instance) {
             if (selectedDates.length === 1) {
@@ -696,7 +705,7 @@
                     li.textContent = `${p.name}${stateStr} (${p.country})`;
                     li.onclick = () => {
                         locationInput.value = `${p.name}${stateStr}`;
-                        selectedLocationInfo = { name: p.name, state: p.admin1 || '', country: p.country, lat: p.latitude, lon: p.longitude };
+                        selectedLocationInfo = { name: p.name, state: p.admin1 || '', country: p.country, lat: p.latitude, lon: p.longitude, timezone: p.timezone || 'auto' };
                         suggestionsList.style.display = 'none';
                     };
                     suggestionsList.appendChild(li);
@@ -712,6 +721,7 @@
             const res = await fetch(url);
             const data = await res.json();
             const h = data.hourly;
+            const tz = data.timezone;
 
             const getRangeDesc = (startIdx, endIdx) => {
                 const uniqueDescs = [];
@@ -723,16 +733,38 @@
             };
 
             const now = new Date();
-            const localTodayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            const currentHour = now.getHours();
+            const getTzPart = (options) => {
+                try {
+                    return parseInt(new Intl.DateTimeFormat('en-US', { timeZone: tz, ...options }).format(now), 10);
+                } catch(e) {
+                    return 0;
+                }
+            };
+            const getTzDateStr = () => {
+                try {
+                    const parts = new Intl.DateTimeFormat('en-US', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
+                    const y = parts.find(p => p.type === 'year').value;
+                    const m = parts.find(p => p.type === 'month').value;
+                    const d = parts.find(p => p.type === 'day').value;
+                    return `${y}-${m}-${d}`;
+                } catch(e) {
+                    return '';
+                }
+            };
+
+            const localTodayStr = getTzDateStr();
+            const currentHour = getTzPart({ hour: 'numeric', hour12: false });
+            
+            const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
             return {
-                morning: { temp: Math.round(h.temperature_2m[8]), desc: getRangeDesc(8, 13), isPast: isToday && currentHour >= 13 },
-                afternoon: { temp: Math.round(h.temperature_2m[14]), desc: getRangeDesc(14, 19), isPast: isToday && currentHour >= 19 },
-                evening: { temp: Math.round(h.temperature_2m[20]), desc: getRangeDesc(20, 23), isPast: isToday && currentHour >= 23 },
+                morning: { temp: Math.round(h.temperature_2m[8]), desc: getRangeDesc(8, 13), isPast: isPastDate || (isToday && currentHour >= 13) },
+                afternoon: { temp: Math.round(h.temperature_2m[14]), desc: getRangeDesc(14, 19), isPast: isPastDate || (isToday && currentHour >= 19) },
+                evening: { temp: Math.round(h.temperature_2m[20]), desc: getRangeDesc(20, 23), isPast: isPastDate || (isToday && currentHour >= 23) },
                 unit: 'fahrenheit',
-                source: 'ECMWF'
+                source: 'ECMWF',
+                timezone: tz
             };
         } catch (err) { return null; }
     }
@@ -746,6 +778,7 @@
             const pointData = await pointRes.json();
 
             const hourlyUrl = pointData.properties && pointData.properties.forecastHourly;
+            const zoneTz = pointData.properties && pointData.properties.timeZone;
             if (!hourlyUrl) return null;
 
             const forecastRes = await fetch(hourlyUrl, { headers });
@@ -804,20 +837,42 @@
             if (!morning || !afternoon || !evening) return null;
 
             const now = new Date();
-            const localTodayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            const currentHour = now.getHours();
+            const getTzPart = (options) => {
+                try {
+                    return parseInt(new Intl.DateTimeFormat('en-US', { timeZone: zoneTz, ...options }).format(now), 10);
+                } catch(e) {
+                    return 0;
+                }
+            };
+            const getTzDateStr = () => {
+                try {
+                    const parts = new Intl.DateTimeFormat('en-US', { timeZone: zoneTz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
+                    const y = parts.find(p => p.type === 'year').value;
+                    const m = parts.find(p => p.type === 'month').value;
+                    const d = parts.find(p => p.type === 'day').value;
+                    return `${y}-${m}-${d}`;
+                } catch(e) {
+                    return '';
+                }
+            };
+
+            const localTodayStr = getTzDateStr();
+            const currentHour = getTzPart({ hour: 'numeric', hour12: false });
+            
+            const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
-            morning.isPast = isToday && currentHour >= 13;
-            afternoon.isPast = isToday && currentHour >= 19;
-            evening.isPast = isToday && currentHour >= 23;
+            morning.isPast = isPastDate || (isToday && currentHour >= 13);
+            afternoon.isPast = isPastDate || (isToday && currentHour >= 19);
+            evening.isPast = isPastDate || (isToday && currentHour >= 23);
 
             return {
                 morning,
                 afternoon,
                 evening,
                 unit: 'fahrenheit',
-                source: nwsHadData ? 'NWS' : 'ECMWF'
+                source: nwsHadData ? 'NWS' : 'ECMWF',
+                timezone: zoneTz
             };
         } catch (err) {
             return null;
@@ -837,6 +892,32 @@
 
     function renderList() {
         journeyEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        journeyEntries.forEach(entry => {
+            if (entry.weather && entry.weather.timezone) {
+                const now = new Date();
+                const tz = entry.weather.timezone;
+                const getTzPart = (options) => {
+                    try { return parseInt(new Intl.DateTimeFormat('en-US', { timeZone: tz, ...options }).format(now), 10); } catch(e) { return 0; }
+                };
+                const getTzDateStr = () => {
+                    try {
+                        const parts = new Intl.DateTimeFormat('en-US', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
+                        return `${parts.find(p => p.type === 'year').value}-${parts.find(p => p.type === 'month').value}-${parts.find(p => p.type === 'day').value}`;
+                    } catch(e) { return ''; }
+                };
+                const localTodayStr = getTzDateStr();
+                const currentHour = getTzPart({ hour: 'numeric', hour12: false });
+                
+                const isPastDate = entry.date < localTodayStr;
+                const isToday = (entry.date === localTodayStr);
+
+                if (entry.weather.morning) entry.weather.morning.isPast = isPastDate || (isToday && currentHour >= 13);
+                if (entry.weather.afternoon) entry.weather.afternoon.isPast = isPastDate || (isToday && currentHour >= 19);
+                if (entry.weather.evening) entry.weather.evening.isPast = isPastDate || (isToday && currentHour >= 23);
+            }
+        });
+
         localStorage.setItem('wxjourney_v16', JSON.stringify(journeyEntries));
         journeyListContainer.innerHTML = '';
 
@@ -845,7 +926,7 @@
             const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
             const sourceText = entry.weather && entry.weather.source ? entry.weather.source : '';
 
-            let weatherHTML = `<div class="weather-data"><span style="color:var(--burnt-orange); font-size: 0.8rem; padding: 2px 0;">Date outside of forecast range...</span></div>`;
+            let weatherHTML = `<div class="weather-data"><span style="color:var(--xbutton); font-size: 0.8rem; padding: 2px 0;">Date outside of forecast range...</span></div>`;
 
             if (entry.weather) {
                 const unitSymbol = tempUnit === 'fahrenheit' ? '° F' : '° C';
@@ -896,6 +977,8 @@
             flatpickr(input, {
                 mode: "single",
                 dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d-M-Y",
                 defaultDate: input.value,
                 disableMobile: true,
                 onChange: async (selectedDates, dateStr) => {
@@ -970,7 +1053,18 @@
 
     refreshBtn.addEventListener('click', async () => {
         refreshBtn.textContent = "WAIT";
-        for (let e of journeyEntries) { e.weather = await fetchWeather(e.lat, e.lon, e.date, e.country); }
+        
+        for (let e of journeyEntries) {
+            try {
+                const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country);
+                if (newWeather !== null) {
+                    e.weather = newWeather;
+                }
+            } catch (err) {
+                console.warn("Refresh failed for entry due to network error, keeping cached data.", err);
+            }
+        }
+        
         refreshBtn.textContent = "REFRESH";
         renderList();
     });
