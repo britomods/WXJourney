@@ -1,4 +1,3 @@
-<!-- Release 8.1.7 -->
 <!-- Location Picker Library/API: Open-Meteo Geocoding API -->
 <!-- Date Picker Library: Flatpickr JS (Range Mode) -->
 <!-- Weather Forecast Source API: NOAA / NWS API (US locations within forecast window) & Open-Meteo Weather Forecast API (Fallback & Non-US locations) -->
@@ -19,6 +18,7 @@
             --background: #0a0e29;
             --highlighter: #39ff14;
             --refreshbtn: #FD3777;
+            --themebutton: #fd3777;
             --wxtimes: #BF00FF;
             --header: #00f0ff;
             --cities: #00f0ff;
@@ -26,14 +26,42 @@
             --recordborder1: #8a2be2;
             --xbutton: #ff8d00;
             --infobutton: #ff8d00;
+            --welcomebackground: rgba(10, 14, 41, 0.9);
             --underlines: #CCFF00;
+            --addbutton: #CCFF00;
             --tempunit: #f706cf;
-            --country: #f706cf; 
+            --country: #f706cf;
+            --wxsource: #347D75;  
             --weekday: #00ffa3;
             --datepicker: #00ffa3;
             --conditions: #f0f0f0;
             --recordborder2: #920075;
             --britomods: #347D75;
+        }
+
+        body.light-mode {
+            --background: #1A4A7C;
+            --highlighter: #39ff14;
+            --refreshbtn: #ffb900;
+            --themebutton: #ffb900;
+            --wxtimes: #ffb900;
+            --header: #FFEB3B;
+            --cities: #FFEB3B;
+            --locbox: #FFEB3B;
+            --recordborder1: #4CAF50;
+            --xbutton: #d16ed0;
+            --infobutton: #d16ed0;
+            --welcomebackground: rgba(26, 74, 124, 0.9);
+            --underlines: #00f0ff;
+            --addbutton: #FFEB3B;
+            --tempunit: #E97DB1;
+            --country: #E97DB1;
+            --wxsource: #00c3ec; 
+            --weekday: #53ecb5;
+            --datepicker: #53ecb5;
+            --conditions: #f0f0f0;
+            --recordborder2: #ffb900;
+            --britomods: #ccff00;
         }
 
         body {
@@ -54,6 +82,12 @@
             width: 100%;
             max-width: 400px;
             margin-bottom: 20px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
         }
 
         h1 {
@@ -89,6 +123,26 @@
             flex-shrink: 0;
             cursor: pointer;
             font-family: inherit;
+        }
+
+        .theme-btn {
+            background: transparent;
+            color: var(--themebutton);
+            border: 1px solid var(--themebutton);
+            padding: 0;
+            font-weight: normal;
+            height: 28px;
+            width: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.65rem;
+            line-height: 1;
+            text-align: center;
         }
 
         .controls-container {
@@ -163,8 +217,8 @@
         }
 
         #add-btn {
-            color: var(--underlines);
-            border: 1px solid var(--underlines);
+            color: var(--addbutton);
+            border: 1px solid var(--addbutton);
             font-size: 1.2rem;
             font-weight: normal;
             padding: 0 10px;
@@ -301,7 +355,7 @@
         }
 
         .source-label {
-            color: var(--britomods);
+            color: var(--wxsource);
             font-weight: normal;
             font-size: 0.9rem;
             text-align: center;
@@ -387,7 +441,7 @@
             width: 100%;
             height: 100%;
             height: 100dvh;
-            background-color: rgba(10, 14, 41, 0.9);
+            background-color: var(--welcomebackground);
             z-index: 1000;
             overflow-y: auto;
             padding: 20px 10px;
@@ -493,6 +547,7 @@
         .color-blue { color: var(--header); font-weight: bold; }
         .color-green { color: var(--weekday); font-weight: bold; }
         .color-yellow { color: var(--underlines); font-weight: bold; }
+        .color-add { color: var(--addbutton); font-weight: bold; }
         .color-orange { color: var(--xbutton); font-weight: bold; }
         .color-red { color: var(--refreshbtn); font-weight: bold; }
         .color-plum { color: var(--recordborder2); font-weight: bold; }
@@ -545,7 +600,10 @@
 
 <div class="header-container">
     <h1>WX<SPAN STYLE="FONT-WEIGHT:100">Journey</SPAN></h1>
-    <button class="info-btn" id="open-welcome-btn">info</button>
+    <div class="header-buttons">
+        <button class="theme-btn" id="theme-toggle-btn">LIGHT<br>MODE</button>
+        <button class="info-btn" id="open-welcome-btn">info</button>
+    </div>
 </div>
 
 <div class="controls-container">
@@ -583,7 +641,7 @@
         <div class="instruction-list">
             <div class="instruction-card">
                 <span class="instruction-title">Add record(s)</span>
-                Enter a location using the <span class="color-blue">[location picker]</span>. Select a single date or date range in the <span class="color-green">[date picker]</span>. Press <span class="color-yellow">[+]</span> to create the record(s).
+                Enter a location using the <span class="color-blue">[location picker]</span>. Select a single date or date range in the <span class="color-green">[date picker]</span>. Press <span class="color-add">[+]</span> to create the record(s).
             </div>
 
             <div class="instruction-card">
@@ -633,6 +691,27 @@
     const tempToggleBtn = document.getElementById('temp-toggle-btn');
     const refreshBtn = document.getElementById('refresh-btn');
     const journeyListContainer = document.getElementById('journey-list');
+
+    // Theme Toggle DOM Bindings
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    let isDarkMode = localStorage.getItem('wxjourney_theme') !== 'light';
+
+    function applyTheme() {
+        if (isDarkMode) {
+            document.body.classList.remove('light-mode');
+            themeToggleBtn.innerHTML = 'LIGHT<br>MODE';
+            localStorage.setItem('wxjourney_theme', 'dark');
+        } else {
+            document.body.classList.add('light-mode');
+            themeToggleBtn.innerHTML = 'DARK<br>MODE';
+            localStorage.setItem('wxjourney_theme', 'light');
+        }
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+        isDarkMode = !isDarkMode;
+        applyTheme();
+    });
 
     // Welcome Screen DOM Bindings
     const welcomeModal = document.getElementById('welcome-modal');
@@ -794,7 +873,7 @@
                 return await fetchWeatherOpenMeteo(lat, lon, dateStr);
             }
 
-            const getPeriodData = (startHour, endHour, defaultTargetHour) => {
+            const getPeriodData = (targetHour, startHour, endHour) => {
                 const rangePeriods = datePeriods.filter(p => {
                     const h = parseInt(p.startTime.substring(11, 13), 10);
                     return h >= startHour && h <= endHour;
@@ -802,7 +881,8 @@
 
                 if (rangePeriods.length === 0) return null;
 
-                const primary = rangePeriods.find(p => parseInt(p.startTime.substring(11, 13), 10) === defaultTargetHour) || rangePeriods[0];
+                // Exactly match target forecasted hour (8, 14, or 20) if available in periods, otherwise fallback to first in range
+                const primary = datePeriods.find(p => parseInt(p.startTime.substring(11, 13), 10) === targetHour) || rangePeriods[0];
                 const descs = [];
                 rangePeriods.forEach(p => {
                     if (p.shortForecast && !descs.includes(p.shortForecast)) {
@@ -819,9 +899,9 @@
                 };
             };
 
-            let morning = getPeriodData(8, 13, 8);
-            let afternoon = getPeriodData(14, 19, 14);
-            let evening = getPeriodData(20, 23, 20);
+            let morning = getPeriodData(8, 8, 13);
+            let afternoon = getPeriodData(14, 14, 19);
+            let evening = getPeriodData(20, 20, 23);
 
             const nwsHadData = morning || afternoon || evening;
 
@@ -1069,6 +1149,7 @@
         renderList();
     });
 
+    applyTheme();
     updateToggleDisplay();
     renderList();
 </script>
