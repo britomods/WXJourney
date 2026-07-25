@@ -22,7 +22,7 @@
             --header: #00f0ff;
             --cities: #00f0ff;
             --locbox: #00f0ff;
-            --recordborder1: #8a2be2;
+            --recordborder1: #920075;
             --xbutton: #ff8d00;
             --infobutton: #ff8d00;
             --welcomebackground: #0a0e29e6;
@@ -35,32 +35,32 @@
             --datepicker: #00ffa3;
             --conditions: #f0f0f0;
             --recordborder2: #920075;
-            --howto: #ff8d00;
+            --howto: #00ffa3;
             --britomods: #347D75;
         }
 
-        body.light-mode {
-            --background: #1A4A7C;
-            --refreshbtn: #ffb900;
-            --themebutton: #ffb900;
-            --wxtimes: #ffb900;
-            --header: #FFEB3B;
-            --cities: #FFEB3B;
-            --locbox: #FFEB3B;
-            --recordborder1: #4b7fff;
-            --xbutton: #d16ed0;
-            --infobutton: #d16ed0;
-            --welcomebackground: #1A4A7Ce6;
-            --underlines: #00f0ff;
-            --addbutton: #00f0ff;
-            --tempunit: #E97DB1;
-            --country: #E97DB1;
-            --wxsource: #00c3ec; 
-            --weekday: #53ecb5;
-            --datepicker: #53ecb5;
-            --conditions: #f0f0f0;
-            --recordborder2: #ffb900;
-            --howto: #00c3ec;
+                body.light-mode {
+            --background: #faf4e9;
+            --refreshbtn: #ffb356;
+            --themebutton: #ffb356;
+            --wxtimes: #ffb356;
+            --header: #00c3ec;
+            --cities: #00c3ec;
+            --locbox: #00c3ec;
+            --recordborder1: #41b6bc;
+            --xbutton: #B026FF ;
+            --infobutton: #B026FF ;
+            --welcomebackground: #faf4e9e6;
+            --underlines: #ccff00;
+            --addbutton: #ccff00;
+            --tempunit: #fe019a;
+            --country: #fe019a;
+            --wxsource: #00f0ff; 
+            --weekday: #39ff14;
+            --datepicker: #39ff14;
+            --conditions: #787878;
+            --recordborder2: #39ff14;
+            --howto: #ffb356;
             --britomods: #ccff00;
         }
 
@@ -284,8 +284,9 @@
             top: 100%;
             left: 0;
             right: 0;
+            /*this vv is the underline of the location box*/
             background-color: var(--background);
-            /* border: 1px solid var(--recordborder1); */
+            border: 1px solid var(--locbox);
             max-height: 150px;
             overflow-y: auto;
             z-index: 100;
