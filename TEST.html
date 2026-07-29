@@ -254,20 +254,28 @@
         #temp-toggle-btn {
             color: var(--tempunit);
             border: 1px solid var(--tempunit);
-            padding: 0 6px;
+            padding: 0 4px;
             min-width: 60px;
+            max-width: 80px;
             display: flex;
-            gap: 4px;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
         }
 
         #temp-toggle-btn span {
             font-weight: normal;
+            font-size: 0.75rem;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         #temp-toggle-btn .active-unit {
             font-weight: 900;
-            font-size: 1.2rem;
+            font-size: 0.95rem;
             text-decoration: none;
         }
 
