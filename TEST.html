@@ -884,28 +884,39 @@
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
-            const buildPeriod = (fetchedTemp, fetchedDesc, isPastCondition) => {
+            const buildPeriod = (fetchedTemp, fetchedDesc, periodEndHour, existingPeriod) => {
+                // If it already has a lockedTemp from an earlier fetch/render, preserve it permanently!
+                if (existingPeriod && existingPeriod.lockedTemp !== undefined) {
+                    return {
+                        temp: existingPeriod.lockedTemp,
+                        lockedTemp: existingPeriod.lockedTemp,
+                        desc: fetchedDesc,
+                        isPast: true
+                    };
+                }
+
+                // Otherwise, check if this period's 6-hour window has passed
+                const passedCondition = isPastDate || (isToday && currentHour >= periodEndHour);
                 let tempVal = fetchedTemp;
                 let locked = undefined;
-                if (existingEntryPeriod && existingEntryPeriod.lockedTemp !== undefined) {
-                    tempVal = existingEntryPeriod.lockedTemp;
-                    locked = existingEntryPeriod.lockedTemp;
-                } else if (isPastCondition) {
+
+                if (passedCondition) {
                     tempVal = fetchedTemp;
                     locked = fetchedTemp;
                 }
+
                 return {
                     temp: tempVal,
                     lockedTemp: locked,
                     desc: fetchedDesc,
-                    isPast: isPastCondition
+                    isPast: passedCondition
                 };
             };
 
             return {
-                morning: buildPeriod(Math.round(h.temperature_2m[8]), getRangeDesc(8, 13), isPastDate || (isToday && currentHour >= 13)),
-                afternoon: buildPeriod(Math.round(h.temperature_2m[14]), getRangeDesc(14, 19), isPastDate || (isToday && currentHour >= 19)),
-                evening: buildPeriod(Math.round(h.temperature_2m[20]), getRangeDesc(20, 23), isPastDate || (isToday && currentHour >= 23)),
+                morning: buildPeriod(Math.round(h.temperature_2m[8]), getRangeDesc(8, 13), 14, existingEntryPeriod ? existingEntryPeriod.morning : null),
+                afternoon: buildPeriod(Math.round(h.temperature_2m[14]), getRangeDesc(14, 19), 20, existingEntryPeriod ? existingEntryPeriod.afternoon : null),
+                evening: buildPeriod(Math.round(h.temperature_2m[20]), getRangeDesc(20, 23), 24, existingEntryPeriod ? existingEntryPeriod.evening : null),
                 unit: 'fahrenheit',
                 source: 'ECMWF',
                 timezone: tz
@@ -935,7 +946,7 @@
             const datePeriods = periods.filter(p => p.startTime.startsWith(dateStr));
 
             if (datePeriods.length === 0) {
-                return await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather ? existingWeather.morning : null);
+                return await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather);
             }
 
             const getPeriodData = (targetHour, startHour, endHour) => {
@@ -970,7 +981,7 @@
             const nwsHadData = morning || afternoon || evening;
 
             if (!morning || !afternoon || !evening) {
-                const omData = await fetchWeatherOpenMeteo(lat, lon, dateStr);
+                const omData = await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather);
                 if (omData) {
                     if (!morning) morning = omData.morning;
                     if (!afternoon) afternoon = omData.afternoon;
@@ -1006,25 +1017,32 @@
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
-            const applyLock = (periodObj, isPastCondition, existingPeriodData) => {
+            const applyLock = (periodObj, periodEndHour, existingPeriodData) => {
+                if (existingPeriodData && existingPeriodData.lockedTemp !== undefined) {
+                    periodObj.temp = existingPeriodData.lockedTemp;
+                    periodObj.lockedTemp = existingPeriodData.lockedTemp;
+                    periodObj.isPast = true;
+                    return periodObj;
+                }
+
+                const passedCondition = isPastDate || (isToday && currentHour >= periodEndHour);
                 let tempVal = periodObj.temp;
                 let locked = undefined;
-                if (existingPeriodData && existingPeriodData.lockedTemp !== undefined) {
-                    tempVal = existingPeriodData.lockedTemp;
-                    locked = existingPeriodData.lockedTemp;
-                } else if (isPastCondition) {
+
+                if (passedCondition) {
                     tempVal = periodObj.temp;
                     locked = periodObj.temp;
                 }
+
                 periodObj.temp = tempVal;
                 periodObj.lockedTemp = locked;
-                periodObj.isPast = isPastCondition;
+                periodObj.isPast = passedCondition;
                 return periodObj;
             };
 
-            applyLock(morning, isPastDate || (isToday && currentHour >= 13), existingWeather ? existingWeather.morning : null);
-            applyLock(afternoon, isPastDate || (isToday && currentHour >= 19), existingWeather ? existingWeather.afternoon : null);
-            applyLock(evening, isPastDate || (isToday && currentHour >= 23), existingWeather ? existingWeather.evening : null);
+            applyLock(morning, 14, existingWeather ? existingWeather.morning : null);
+            applyLock(afternoon, 20, existingWeather ? existingWeather.afternoon : null);
+            applyLock(evening, 24, existingWeather ? existingWeather.evening : null);
 
             return {
                 morning,
@@ -1072,28 +1090,25 @@
                 const isPastDate = entry.date < localTodayStr;
                 const isToday = (entry.date === localTodayStr);
 
-                const checkAndLockPeriod = (period) => {
+                const checkAndLockPeriod = (period, periodEndHour) => {
                     if (!period) return;
-                    const pastCondition = isPastDate || (isToday && (
-                        (period === entry.weather.morning && currentHour >= 13) ||
-                        (period === entry.weather.afternoon && currentHour >= 19) ||
-                        (period === entry.weather.evening && currentHour >= 23)
-                    ));
+                    if (period.lockedTemp !== undefined) {
+                        period.temp = period.lockedTemp;
+                        period.isPast = true;
+                        return;
+                    }
+                    const pastCondition = isPastDate || (isToday && currentHour >= periodEndHour);
                     if (pastCondition) {
-                        if (period.lockedTemp === undefined) {
-                            period.lockedTemp = period.temp;
-                        } else {
-                            period.temp = period.lockedTemp;
-                        }
+                        period.lockedTemp = period.temp;
                         period.isPast = true;
                     } else {
                         period.isPast = false;
                     }
                 };
 
-                checkAndLockPeriod(entry.weather.morning);
-                checkAndLockPeriod(entry.weather.afternoon);
-                checkAndLockPeriod(entry.weather.evening);
+                checkAndLockPeriod(entry.weather.morning, 14);
+                checkAndLockPeriod(entry.weather.afternoon, 20);
+                checkAndLockPeriod(entry.weather.evening, 24);
             }
         });
 
