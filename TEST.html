@@ -841,7 +841,7 @@
         } catch (err) { console.error(err); }
     });
 
-    async function fetchWeatherOpenMeteo(lat, lon, dateStr) {
+    async function fetchWeatherOpenMeteo(lat, lon, dateStr, existingEntryPeriod = null) {
         try {
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${dateStr}&end_date=${dateStr}&hourly=temperature_2m,weathercode&temperature_unit=fahrenheit&timezone=auto`;
             const res = await fetch(url);
@@ -884,10 +884,28 @@
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
+            const buildPeriod = (fetchedTemp, fetchedDesc, isPastCondition) => {
+                let tempVal = fetchedTemp;
+                let locked = undefined;
+                if (existingEntryPeriod && existingEntryPeriod.lockedTemp !== undefined) {
+                    tempVal = existingEntryPeriod.lockedTemp;
+                    locked = existingEntryPeriod.lockedTemp;
+                } else if (isPastCondition) {
+                    tempVal = fetchedTemp;
+                    locked = fetchedTemp;
+                }
+                return {
+                    temp: tempVal,
+                    lockedTemp: locked,
+                    desc: fetchedDesc,
+                    isPast: isPastCondition
+                };
+            };
+
             return {
-                morning: { temp: Math.round(h.temperature_2m[8]), desc: getRangeDesc(8, 13), isPast: isPastDate || (isToday && currentHour >= 13) },
-                afternoon: { temp: Math.round(h.temperature_2m[14]), desc: getRangeDesc(14, 19), isPast: isPastDate || (isToday && currentHour >= 19) },
-                evening: { temp: Math.round(h.temperature_2m[20]), desc: getRangeDesc(20, 23), isPast: isPastDate || (isToday && currentHour >= 23) },
+                morning: buildPeriod(Math.round(h.temperature_2m[8]), getRangeDesc(8, 13), isPastDate || (isToday && currentHour >= 13)),
+                afternoon: buildPeriod(Math.round(h.temperature_2m[14]), getRangeDesc(14, 19), isPastDate || (isToday && currentHour >= 19)),
+                evening: buildPeriod(Math.round(h.temperature_2m[20]), getRangeDesc(20, 23), isPastDate || (isToday && currentHour >= 23)),
                 unit: 'fahrenheit',
                 source: 'ECMWF',
                 timezone: tz
@@ -895,7 +913,7 @@
         } catch (err) { return null; }
     }
 
-    async function fetchWeatherNWS(lat, lon, dateStr) {
+    async function fetchWeatherNWS(lat, lon, dateStr, existingWeather = null) {
         try {
             const headers = { 'User-Agent': 'WXJourney (britomods118@gmail.com)' };
 
@@ -917,7 +935,7 @@
             const datePeriods = periods.filter(p => p.startTime.startsWith(dateStr));
 
             if (datePeriods.length === 0) {
-                return await fetchWeatherOpenMeteo(lat, lon, dateStr);
+                return await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather ? existingWeather.morning : null);
             }
 
             const getPeriodData = (targetHour, startHour, endHour) => {
@@ -988,9 +1006,25 @@
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
-            morning.isPast = isPastDate || (isToday && currentHour >= 13);
-            afternoon.isPast = isPastDate || (isToday && currentHour >= 19);
-            evening.isPast = isPastDate || (isToday && currentHour >= 23);
+            const applyLock = (periodObj, isPastCondition, existingPeriodData) => {
+                let tempVal = periodObj.temp;
+                let locked = undefined;
+                if (existingPeriodData && existingPeriodData.lockedTemp !== undefined) {
+                    tempVal = existingPeriodData.lockedTemp;
+                    locked = existingPeriodData.lockedTemp;
+                } else if (isPastCondition) {
+                    tempVal = periodObj.temp;
+                    locked = periodObj.temp;
+                }
+                periodObj.temp = tempVal;
+                periodObj.lockedTemp = locked;
+                periodObj.isPast = isPastCondition;
+                return periodObj;
+            };
+
+            applyLock(morning, isPastDate || (isToday && currentHour >= 13), existingWeather ? existingWeather.morning : null);
+            applyLock(afternoon, isPastDate || (isToday && currentHour >= 19), existingWeather ? existingWeather.afternoon : null);
+            applyLock(evening, isPastDate || (isToday && currentHour >= 23), existingWeather ? existingWeather.evening : null);
 
             return {
                 morning,
@@ -1005,15 +1039,15 @@
         }
     }
 
-    async function fetchWeather(lat, lon, dateStr, country) {
+    async function fetchWeather(lat, lon, dateStr, country, existingWeather = null) {
         const isUS = country && (country.includes('United States') || country === 'US' || country === 'USA');
 
         if (isUS) {
-            const nwsData = await fetchWeatherNWS(lat, lon, dateStr);
+            const nwsData = await fetchWeatherNWS(lat, lon, dateStr, existingWeather);
             if (nwsData) return nwsData;
         }
 
-        return await fetchWeatherOpenMeteo(lat, lon, dateStr);
+        return await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather);
     }
 
     function renderList() {
@@ -1038,9 +1072,28 @@
                 const isPastDate = entry.date < localTodayStr;
                 const isToday = (entry.date === localTodayStr);
 
-                if (entry.weather.morning) entry.weather.morning.isPast = isPastDate || (isToday && currentHour >= 13);
-                if (entry.weather.afternoon) entry.weather.afternoon.isPast = isPastDate || (isToday && currentHour >= 19);
-                if (entry.weather.evening) entry.weather.evening.isPast = isPastDate || (isToday && currentHour >= 23);
+                const checkAndLockPeriod = (period) => {
+                    if (!period) return;
+                    const pastCondition = isPastDate || (isToday && (
+                        (period === entry.weather.morning && currentHour >= 13) ||
+                        (period === entry.weather.afternoon && currentHour >= 19) ||
+                        (period === entry.weather.evening && currentHour >= 23)
+                    ));
+                    if (pastCondition) {
+                        if (period.lockedTemp === undefined) {
+                            period.lockedTemp = period.temp;
+                        } else {
+                            period.temp = period.lockedTemp;
+                        }
+                        period.isPast = true;
+                    } else {
+                        period.isPast = false;
+                    }
+                };
+
+                checkAndLockPeriod(entry.weather.morning);
+                checkAndLockPeriod(entry.weather.afternoon);
+                checkAndLockPeriod(entry.weather.evening);
             }
         });
 
@@ -1115,7 +1168,7 @@
                         entry.weather = null;
                         renderList();
 
-                        const newWeather = await fetchWeather(entry.lat, entry.lon, entry.date, entry.country);
+                        const newWeather = await fetchWeather(entry.lat, entry.lon, entry.date, entry.country, null);
                         const currentEntry = journeyEntries.find(i => i.id === id);
                         if (currentEntry && currentEntry.date === entry.date) {
                             currentEntry.weather = newWeather;
@@ -1149,7 +1202,7 @@
         const locInfo = { ...selectedLocationInfo };
 
         for (const dateVal of datesToFetch) {
-            const weather = await fetchWeather(locInfo.lat, locInfo.lon, dateVal, locInfo.country);
+            const weather = await fetchWeather(locInfo.lat, locInfo.lon, dateVal, locInfo.country, null);
             journeyEntries.push({
                 id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5),
                 ...locInfo,
@@ -1182,7 +1235,7 @@
         
         for (let e of journeyEntries) {
             try {
-                const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country);
+                const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country, e.weather);
                 if (newWeather !== null) {
                     e.weather = newWeather;
                 }
