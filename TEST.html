@@ -18,11 +18,11 @@
             --background: #0a0e29;
             --refreshbtn: #FD3777;
             --themebutton: #fd3777;
-            --wxtimes: #BF00FF;
+            --wxtimes: #8a2be2;
             --header: #00f0ff;
             --cities: #00f0ff;
             --locbox: #00f0ff;
-            --recordborder1: #8a2be2;
+            --recordborder1: #bf00ff;
             --xbutton: #ff8d00;
             --infobutton: #ff8d00;
             --welcomebackground: #0a0e29e6;
@@ -766,11 +766,12 @@
     const closeWelcomeBtn = document.getElementById('close-welcome-btn');
 
     // Initialize Flatpickr in Range Mode with altInput formatting
+    // Initialize Flatpickr in Range Mode with altInput formatting
     const datePicker = flatpickr("#date-input", {
         mode: "range",
-        dateFormat: "Y-m-d",
+        dateFormat: "Y-m-d", // Keeps the underlying date value standard for calculations
         altInput: true,
-        altFormat: "d-M-Y",
+        altFormat: "d-M",   // <--- Changed from "d-M-Y" to "d-M"
         conjunction: " to ",
         onClose: function(selectedDates, dateStr, instance) {
             if (selectedDates.length === 1) {
