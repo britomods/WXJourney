@@ -884,39 +884,28 @@
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
-            const buildPeriod = (fetchedTemp, fetchedDesc, periodEndHour, existingPeriod) => {
-                // If it already has a lockedTemp from an earlier fetch/render, preserve it permanently!
-                if (existingPeriod && existingPeriod.lockedTemp !== undefined) {
-                    return {
-                        temp: existingPeriod.lockedTemp,
-                        lockedTemp: existingPeriod.lockedTemp,
-                        desc: fetchedDesc,
-                        isPast: true
-                    };
-                }
-
-                // Otherwise, check if this period's 6-hour window has passed
-                const passedCondition = isPastDate || (isToday && currentHour >= periodEndHour);
+            const buildPeriod = (fetchedTemp, fetchedDesc, isPastCondition) => {
                 let tempVal = fetchedTemp;
                 let locked = undefined;
-
-                if (passedCondition) {
+                if (existingEntryPeriod && existingEntryPeriod.lockedTemp !== undefined) {
+                    tempVal = existingEntryPeriod.lockedTemp;
+                    locked = existingEntryPeriod.lockedTemp;
+                } else if (isPastCondition) {
                     tempVal = fetchedTemp;
                     locked = fetchedTemp;
                 }
-
                 return {
                     temp: tempVal,
                     lockedTemp: locked,
                     desc: fetchedDesc,
-                    isPast: passedCondition
+                    isPast: isPastCondition
                 };
             };
 
             return {
-                morning: buildPeriod(Math.round(h.temperature_2m[8]), getRangeDesc(8, 13), 14, existingEntryPeriod ? existingEntryPeriod.morning : null),
-                afternoon: buildPeriod(Math.round(h.temperature_2m[14]), getRangeDesc(14, 19), 20, existingEntryPeriod ? existingEntryPeriod.afternoon : null),
-                evening: buildPeriod(Math.round(h.temperature_2m[20]), getRangeDesc(20, 23), 24, existingEntryPeriod ? existingEntryPeriod.evening : null),
+                morning: buildPeriod(Math.round(h.temperature_2m[8]), getRangeDesc(8, 13), isPastDate || (isToday && currentHour >= 13)),
+                afternoon: buildPeriod(Math.round(h.temperature_2m[14]), getRangeDesc(14, 19), isPastDate || (isToday && currentHour >= 19)),
+                evening: buildPeriod(Math.round(h.temperature_2m[20]), getRangeDesc(20, 23), isPastDate || (isToday && currentHour >= 23)),
                 unit: 'fahrenheit',
                 source: 'ECMWF',
                 timezone: tz
@@ -946,7 +935,7 @@
             const datePeriods = periods.filter(p => p.startTime.startsWith(dateStr));
 
             if (datePeriods.length === 0) {
-                return await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather);
+                return await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather ? existingWeather.morning : null);
             }
 
             const getPeriodData = (targetHour, startHour, endHour) => {
@@ -981,7 +970,7 @@
             const nwsHadData = morning || afternoon || evening;
 
             if (!morning || !afternoon || !evening) {
-                const omData = await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather);
+                const omData = await fetchWeatherOpenMeteo(lat, lon, dateStr);
                 if (omData) {
                     if (!morning) morning = omData.morning;
                     if (!afternoon) afternoon = omData.afternoon;
@@ -1017,32 +1006,25 @@
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
-            const applyLock = (periodObj, periodEndHour, existingPeriodData) => {
-                if (existingPeriodData && existingPeriodData.lockedTemp !== undefined) {
-                    periodObj.temp = existingPeriodData.lockedTemp;
-                    periodObj.lockedTemp = existingPeriodData.lockedTemp;
-                    periodObj.isPast = true;
-                    return periodObj;
-                }
-
-                const passedCondition = isPastDate || (isToday && currentHour >= periodEndHour);
+            const applyLock = (periodObj, isPastCondition, existingPeriodData) => {
                 let tempVal = periodObj.temp;
                 let locked = undefined;
-
-                if (passedCondition) {
+                if (existingPeriodData && existingPeriodData.lockedTemp !== undefined) {
+                    tempVal = existingPeriodData.lockedTemp;
+                    locked = existingPeriodData.lockedTemp;
+                } else if (isPastCondition) {
                     tempVal = periodObj.temp;
                     locked = periodObj.temp;
                 }
-
                 periodObj.temp = tempVal;
                 periodObj.lockedTemp = locked;
-                periodObj.isPast = passedCondition;
+                periodObj.isPast = isPastCondition;
                 return periodObj;
             };
 
-            applyLock(morning, 14, existingWeather ? existingWeather.morning : null);
-            applyLock(afternoon, 20, existingWeather ? existingWeather.afternoon : null);
-            applyLock(evening, 24, existingWeather ? existingWeather.evening : null);
+            applyLock(morning, isPastDate || (isToday && currentHour >= 13), existingWeather ? existingWeather.morning : null);
+            applyLock(afternoon, isPastDate || (isToday && currentHour >= 19), existingWeather ? existingWeather.afternoon : null);
+            applyLock(evening, isPastDate || (isToday && currentHour >= 23), existingWeather ? existingWeather.evening : null);
 
             return {
                 morning,
@@ -1090,25 +1072,28 @@
                 const isPastDate = entry.date < localTodayStr;
                 const isToday = (entry.date === localTodayStr);
 
-                const checkAndLockPeriod = (period, periodEndHour) => {
+                const checkAndLockPeriod = (period) => {
                     if (!period) return;
-                    if (period.lockedTemp !== undefined) {
-                        period.temp = period.lockedTemp;
-                        period.isPast = true;
-                        return;
-                    }
-                    const pastCondition = isPastDate || (isToday && currentHour >= periodEndHour);
+                    const pastCondition = isPastDate || (isToday && (
+                        (period === entry.weather.morning && currentHour >= 13) ||
+                        (period === entry.weather.afternoon && currentHour >= 19) ||
+                        (period === entry.weather.evening && currentHour >= 23)
+                    ));
                     if (pastCondition) {
-                        period.lockedTemp = period.temp;
+                        if (period.lockedTemp === undefined) {
+                            period.lockedTemp = period.temp;
+                        } else {
+                            period.temp = period.lockedTemp;
+                        }
                         period.isPast = true;
                     } else {
                         period.isPast = false;
                     }
                 };
 
-                checkAndLockPeriod(entry.weather.morning, 14);
-                checkAndLockPeriod(entry.weather.afternoon, 20);
-                checkAndLockPeriod(entry.weather.evening, 24);
+                checkAndLockPeriod(entry.weather.morning);
+                checkAndLockPeriod(entry.weather.afternoon);
+                checkAndLockPeriod(entry.weather.evening);
             }
         });
 
@@ -1261,6 +1246,62 @@
         
         refreshBtn.textContent = "REFRESH";
         renderList();
+    });
+
+    // --- AUTO-UPDATE & CATCH-UP SCHEDULER ---
+    const TARGET_UTC_HOURS = [3, 9, 15, 21];
+    let lastAutoUpdateUtcDay = localStorage.getItem('wxjourney_last_update_day') || null;
+    let lastAutoUpdateHour = localStorage.getItem('wxjourney_last_update_hour') !== null ? parseInt(localStorage.getItem('wxjourney_last_update_hour'), 10) : null;
+
+    async function performAutoUpdate() {
+        if (journeyEntries.length === 0) return;
+        refreshBtn.textContent = "SYNC...";
+        
+        for (let e of journeyEntries) {
+            try {
+                const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country, e.weather);
+                if (newWeather !== null) {
+                    e.weather = newWeather;
+                }
+            } catch (err) {
+                console.warn("Auto-update failed for entry, using cached data.", err);
+            }
+        }
+        
+        refreshBtn.textContent = "REFRESH";
+        renderList();
+    }
+
+    function checkAndTriggerAutoUpdate() {
+        const now = new Date();
+        const utcHour = now.getUTCHours();
+        const utcDay = now.getUTCDate().toString();
+
+        // Catch-up check: If the current hour matches or has passed a scheduled UTC hour that was missed
+        const targetPassed = TARGET_UTC_HOURS.some(target => utcHour >= target);
+        
+        if (TARGET_UTC_HOURS.includes(utcHour) || targetPassed) {
+            if (lastAutoUpdateUtcDay !== utcDay || lastAutoUpdateHour !== utcHour) {
+                lastAutoUpdateUtcDay = utcDay;
+                lastAutoUpdateHour = utcHour;
+                localStorage.setItem('wxjourney_last_update_day', utcDay);
+                localStorage.setItem('wxjourney_last_update_hour', utcHour);
+                performAutoUpdate();
+            }
+        }
+    }
+
+    // 1. Initial check when app opens/loads
+    checkAndTriggerAutoUpdate();
+
+    // 2. Scheduled poll every 5 minutes while actively being used
+    setInterval(checkAndTriggerAutoUpdate, 5 * 60 * 1000);
+
+    // 3. Catch-up trigger when user switches back to the app from background
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            checkAndTriggerAutoUpdate();
+        }
     });
 
     applyTheme();
