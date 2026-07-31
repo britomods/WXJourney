@@ -18,17 +18,21 @@
             --background: #0a0e29;
             --refreshbtn: #FD3777;
             --themebutton: #fd3777;
-            --wxtimes: #BF00FF;
+            --wxtimes: #8a2be2;
             --header: #00f0ff;
             --cities: #00f0ff;
             --locbox: #00f0ff;
+            --entryborder:#bf00ff;
             --recordborder1: #920075;
             --xbutton: #ff8d00;
             --infobutton: #ff8d00;
             --welcomebackground: #0a0e29e6;
+            --welcomeborder:#bf00ff;
             --underlines: #CCFF00;
             --addbutton: #CCFF00;
-            --tempunit: #f706cf;
+            --tempuniton: #f706cf;
+            --tempunitoff: #f706cf80;
+            --tempunitborder: #f706cf;
             --country: #f706cf;
             --wxsource: #347D75;  
             --weekday: #00ffa3;
@@ -39,28 +43,32 @@
             --britomods: #347D75;
         }
 
-                body.light-mode {
-            --background: #faf4e9;
-            --refreshbtn: #ffb356;
-            --themebutton: #ffb356;
-            --wxtimes: #ffb356;
-            --header: #00c3ec;
-            --cities: #00c3ec;
-            --locbox: #00c3ec;
-            --recordborder1: #41b6bc;
-            --xbutton: #B026FF ;
-            --infobutton: #B026FF ;
-            --welcomebackground: #faf4e9e6;
-            --underlines: #ccff00;
-            --addbutton: #ccff00;
-            --tempunit: #fe019a;
-            --country: #fe019a;
-            --wxsource: #00f0ff; 
-            --weekday: #39ff14;
-            --datepicker: #39ff14;
-            --conditions: #787878;
-            --recordborder2: #39ff14;
-            --howto: #ffb356;
+        body.light-mode {
+            --background: #1A4A7C;
+            --refreshbtn: #ffb900;
+            --themebutton: #ffb900;
+            --wxtimes: #ffb900;
+            --header: #FFEB3B;
+            --cities: #FFEB3B;
+            --locbox: #FFEB3B;
+            --entryborder:#4b7fff;
+            --recordborder1: #8a47c9;
+            --xbutton: #d16ed0;
+            --infobutton: #d16ed0;
+            --welcomebackground: #1A4A7Ce6;
+            --welcomeborder:#8a47c9;
+            --underlines: #00f0ff;
+            --addbutton: #00f0ff;
+            --tempuniton: #E97DB1;
+            --tempunitoff: #E97DB180;
+            --tempunitborder: #E97DB1;
+            --country: #E97DB1;
+            --wxsource: #00c3ec; 
+            --weekday: #53ecb5;
+            --datepicker: #53ecb5;
+            --conditions: #f0f0f0;
+            --recordborder2: #ffb900;
+            --howto: #00c3ec;
             --britomods: #ccff00;
         }
 
@@ -72,13 +80,17 @@
             --header: #2d46a1;
             --cities: #2d46a1;
             --locbox: #2d46a1;
+            --entryborder:#735585;
             --recordborder1: #378258;
             --xbutton: #c82519;
             --infobutton: #c82519;
             --welcomebackground: #24231ee6;
+            --welcomeborder:#378258;
             --underlines: #962631;
             --addbutton: #962631;
-            --tempunit: #378258;
+            --tempuniton: #378258;
+            --tempunitoff: #37825880;
+            --tempunitborder: #378258;
             --country: #378258;
             --wxsource: #735585; 
             --weekday: #11978e;
@@ -173,7 +185,7 @@
         .controls-container {
             background-color: var(--background);
             padding: 12px;
-            border: 1px solid var(--recordborder1);
+            border: 1px solid var(--entryborder);
             width: 100%;
             max-width: 400px;
             margin-bottom: 10px;
@@ -252,22 +264,31 @@
 
         /* Unit Toggle Styling */
         #temp-toggle-btn {
-            color: var(--tempunit);
-            border: 1px solid var(--tempunit);
-            padding: 0 6px;
+            border: 1px solid var(--tempunitborder);
+            padding: 0 4px;
             min-width: 60px;
+            max-width: 80px;
             display: flex;
-            gap: 4px;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
         }
 
         #temp-toggle-btn span {
+            color: var(--tempunitoff);
             font-weight: normal;
+            font-size: 0.75rem;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         #temp-toggle-btn .active-unit {
+            color: var(--tempuniton);
             font-weight: 900;
-            font-size: 1.2rem;
+            font-size: 0.95rem;
             text-decoration: none;
         }
 
@@ -382,7 +403,7 @@
 
         .source-label {
             color: var(--wxsource);
-            font-weight: normal;
+            font-weight: bold;
             font-size: 0.9rem;
             text-align: center;
         }
@@ -480,7 +501,7 @@
         .welcome-overlay .controls-container {
             background-color: var(--background);
             padding: 12px;
-            border: 2px solid var(--recordborder1);
+            border: 2px solid var(--welcomeborder);
             width: 100%;
             max-width: 400px;
             box-sizing: border-box;
@@ -578,7 +599,7 @@
         .color-orange { color: var(--xbutton); font-weight: bold; }
         .color-red { color: var(--refreshbtn); font-weight: bold; }
         .color-plum { color: var(--recordborder2); font-weight: bold; }
-        .color-pink { color: var(--tempunit); font-weight: bold; }
+        .color-pink { color: var(--tempuniton); font-weight: bold; }
 
         /* Custom Outrun Styling for Flatpickr Calendar Popup */
         .flatpickr-calendar {
@@ -695,6 +716,7 @@
         <p>Forecast data is provided by the National Weather Service (NWS) and the European Centre for Medium-Range Weather Forecasts (ECMWF).</p>
         <p>NWS date is available for 7 days from the current date and is used for locations within the U.S.</p>
         <p>ECMWF data is available for 15 days from the current date and is used for locations outside of the U.S. or when NWS data is not available.</p>
+        <p>Forecast data automatically refreshes at 3AM, 9AM, 3PM, and 9PM UTC. No data loss occurs if the app attempts a refresh when no data connection is present.</p>
         <p>The temperatures displayed for AM, PM, and EV are the predicted temperatures for 8AM, 2PM, and 8PM respectively.</p>
         <p>The weather conditions displayed are for a range of six hours after the start of the respective time period.</p>
         </div>
@@ -758,11 +780,12 @@
     const closeWelcomeBtn = document.getElementById('close-welcome-btn');
 
     // Initialize Flatpickr in Range Mode with altInput formatting
+    // Initialize Flatpickr in Range Mode with altInput formatting
     const datePicker = flatpickr("#date-input", {
         mode: "range",
-        dateFormat: "Y-m-d",
+        dateFormat: "Y-m-d", // Keeps the underlying date value standard for calculations
         altInput: true,
-        altFormat: "d-M-Y",
+        altFormat: "d-M",   // <--- Changed from "d-M-Y" to "d-M"
         conjunction: " to ",
         onClose: function(selectedDates, dateStr, instance) {
             if (selectedDates.length === 1) {
@@ -833,7 +856,7 @@
         } catch (err) { console.error(err); }
     });
 
-    async function fetchWeatherOpenMeteo(lat, lon, dateStr) {
+    async function fetchWeatherOpenMeteo(lat, lon, dateStr, existingEntryPeriod = null) {
         try {
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${dateStr}&end_date=${dateStr}&hourly=temperature_2m,weathercode&temperature_unit=fahrenheit&timezone=auto`;
             const res = await fetch(url);
@@ -876,10 +899,28 @@
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
+            const buildPeriod = (fetchedTemp, fetchedDesc, isLockedCondition, isPastCondition) => {
+                let tempVal = fetchedTemp;
+                let locked = undefined;
+                if (existingEntryPeriod && existingEntryPeriod.lockedTemp !== undefined) {
+                    tempVal = existingEntryPeriod.lockedTemp;
+                    locked = existingEntryPeriod.lockedTemp;
+                } else if (isLockedCondition) {
+                    tempVal = fetchedTemp;
+                    locked = fetchedTemp;
+                }
+                return {
+                    temp: tempVal,
+                    lockedTemp: locked,
+                    desc: fetchedDesc,
+                    isPast: isPastCondition
+                };
+            };
+
             return {
-                morning: { temp: Math.round(h.temperature_2m[8]), desc: getRangeDesc(8, 13), isPast: isPastDate || (isToday && currentHour >= 13) },
-                afternoon: { temp: Math.round(h.temperature_2m[14]), desc: getRangeDesc(14, 19), isPast: isPastDate || (isToday && currentHour >= 19) },
-                evening: { temp: Math.round(h.temperature_2m[20]), desc: getRangeDesc(20, 23), isPast: isPastDate || (isToday && currentHour >= 23) },
+                morning: buildPeriod(Math.round(h.temperature_2m[8]), getRangeDesc(8, 13), isPastDate || (isToday && currentHour >= 8), isPastDate || (isToday && currentHour >= 13)),
+                afternoon: buildPeriod(Math.round(h.temperature_2m[14]), getRangeDesc(14, 19), isPastDate || (isToday && currentHour >= 14), isPastDate || (isToday && currentHour >= 19)),
+                evening: buildPeriod(Math.round(h.temperature_2m[20]), getRangeDesc(20, 23), isPastDate || (isToday && currentHour >= 20), isPastDate || (isToday && currentHour >= 23)),
                 unit: 'fahrenheit',
                 source: 'ECMWF',
                 timezone: tz
@@ -887,7 +928,7 @@
         } catch (err) { return null; }
     }
 
-    async function fetchWeatherNWS(lat, lon, dateStr) {
+    async function fetchWeatherNWS(lat, lon, dateStr, existingWeather = null) {
         try {
             const headers = { 'User-Agent': 'WXJourney (britomods118@gmail.com)' };
 
@@ -909,7 +950,7 @@
             const datePeriods = periods.filter(p => p.startTime.startsWith(dateStr));
 
             if (datePeriods.length === 0) {
-                return await fetchWeatherOpenMeteo(lat, lon, dateStr);
+                return await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather ? existingWeather.morning : null);
             }
 
             const getPeriodData = (targetHour, startHour, endHour) => {
@@ -980,9 +1021,25 @@
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
-            morning.isPast = isPastDate || (isToday && currentHour >= 13);
-            afternoon.isPast = isPastDate || (isToday && currentHour >= 19);
-            evening.isPast = isPastDate || (isToday && currentHour >= 23);
+            const applyLock = (periodObj, isLockedCondition, isPastCondition, existingPeriodData) => {
+                let tempVal = periodObj.temp;
+                let locked = undefined;
+                if (existingPeriodData && existingPeriodData.lockedTemp !== undefined) {
+                    tempVal = existingPeriodData.lockedTemp;
+                    locked = existingPeriodData.lockedTemp;
+                } else if (isLockedCondition) {
+                    tempVal = periodObj.temp;
+                    locked = periodObj.temp;
+                }
+                periodObj.temp = tempVal;
+                periodObj.lockedTemp = locked;
+                periodObj.isPast = isPastCondition;
+                return periodObj;
+            };
+
+            applyLock(morning, isPastDate || (isToday && currentHour >= 8), isPastDate || (isToday && currentHour >= 13), existingWeather ? existingWeather.morning : null);
+            applyLock(afternoon, isPastDate || (isToday && currentHour >= 14), isPastDate || (isToday && currentHour >= 19), existingWeather ? existingWeather.afternoon : null);
+            applyLock(evening, isPastDate || (isToday && currentHour >= 20), isPastDate || (isToday && currentHour >= 23), existingWeather ? existingWeather.evening : null);
 
             return {
                 morning,
@@ -997,15 +1054,15 @@
         }
     }
 
-    async function fetchWeather(lat, lon, dateStr, country) {
+    async function fetchWeather(lat, lon, dateStr, country, existingWeather = null) {
         const isUS = country && (country.includes('United States') || country === 'US' || country === 'USA');
 
         if (isUS) {
-            const nwsData = await fetchWeatherNWS(lat, lon, dateStr);
+            const nwsData = await fetchWeatherNWS(lat, lon, dateStr, existingWeather);
             if (nwsData) return nwsData;
         }
 
-        return await fetchWeatherOpenMeteo(lat, lon, dateStr);
+        return await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather);
     }
 
     function renderList() {
@@ -1030,9 +1087,26 @@
                 const isPastDate = entry.date < localTodayStr;
                 const isToday = (entry.date === localTodayStr);
 
-                if (entry.weather.morning) entry.weather.morning.isPast = isPastDate || (isToday && currentHour >= 13);
-                if (entry.weather.afternoon) entry.weather.afternoon.isPast = isPastDate || (isToday && currentHour >= 19);
-                if (entry.weather.evening) entry.weather.evening.isPast = isPastDate || (isToday && currentHour >= 23);
+                const checkAndLockPeriod = (period, lockHour, pastHour) => {
+                    if (!period) return;
+                    
+                    const isLockedCondition = isPastDate || (isToday && currentHour >= lockHour);
+                    const isPastCondition = isPastDate || (isToday && currentHour >= pastHour);
+                    
+                    if (isLockedCondition) {
+                        if (period.lockedTemp === undefined) {
+                            period.lockedTemp = period.temp;
+                        } else {
+                            period.temp = period.lockedTemp;
+                        }
+                    }
+                    
+                    period.isPast = isPastCondition;
+                };
+
+                checkAndLockPeriod(entry.weather.morning, 8, 13);
+                checkAndLockPeriod(entry.weather.afternoon, 14, 19);
+                checkAndLockPeriod(entry.weather.evening, 20, 23);
             }
         });
 
@@ -1107,7 +1181,7 @@
                         entry.weather = null;
                         renderList();
 
-                        const newWeather = await fetchWeather(entry.lat, entry.lon, entry.date, entry.country);
+                        const newWeather = await fetchWeather(entry.lat, entry.lon, entry.date, entry.country, null);
                         const currentEntry = journeyEntries.find(i => i.id === id);
                         if (currentEntry && currentEntry.date === entry.date) {
                             currentEntry.weather = newWeather;
@@ -1141,7 +1215,7 @@
         const locInfo = { ...selectedLocationInfo };
 
         for (const dateVal of datesToFetch) {
-            const weather = await fetchWeather(locInfo.lat, locInfo.lon, dateVal, locInfo.country);
+            const weather = await fetchWeather(locInfo.lat, locInfo.lon, dateVal, locInfo.country, null);
             journeyEntries.push({
                 id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5),
                 ...locInfo,
@@ -1174,7 +1248,7 @@
         
         for (let e of journeyEntries) {
             try {
-                const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country);
+                const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country, e.weather);
                 if (newWeather !== null) {
                     e.weather = newWeather;
                 }
@@ -1185,6 +1259,62 @@
         
         refreshBtn.textContent = "REFRESH";
         renderList();
+    });
+
+    // --- AUTO-UPDATE & CATCH-UP SCHEDULER ---
+    const TARGET_UTC_HOURS = [3, 9, 15, 21];
+    let lastAutoUpdateUtcDay = localStorage.getItem('wxjourney_last_update_day') || null;
+    let lastAutoUpdateHour = localStorage.getItem('wxjourney_last_update_hour') !== null ? parseInt(localStorage.getItem('wxjourney_last_update_hour'), 10) : null;
+
+    async function performAutoUpdate() {
+        if (journeyEntries.length === 0) return;
+        refreshBtn.textContent = "SYNC...";
+        
+        for (let e of journeyEntries) {
+            try {
+                const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country, e.weather);
+                if (newWeather !== null) {
+                    e.weather = newWeather;
+                }
+            } catch (err) {
+                console.warn("Auto-update failed for entry, using cached data.", err);
+            }
+        }
+        
+        refreshBtn.textContent = "REFRESH";
+        renderList();
+    }
+
+    function checkAndTriggerAutoUpdate() {
+        const now = new Date();
+        const utcHour = now.getUTCHours();
+        const utcDay = now.getUTCDate().toString();
+
+        // Catch-up check: If the current hour matches or has passed a scheduled UTC hour that was missed
+        const targetPassed = TARGET_UTC_HOURS.some(target => utcHour >= target);
+        
+        if (TARGET_UTC_HOURS.includes(utcHour) || targetPassed) {
+            if (lastAutoUpdateUtcDay !== utcDay || lastAutoUpdateHour !== utcHour) {
+                lastAutoUpdateUtcDay = utcDay;
+                lastAutoUpdateHour = utcHour;
+                localStorage.setItem('wxjourney_last_update_day', utcDay);
+                localStorage.setItem('wxjourney_last_update_hour', utcHour);
+                performAutoUpdate();
+            }
+        }
+    }
+
+    // 1. Initial check when app opens/loads
+    checkAndTriggerAutoUpdate();
+
+    // 2. Scheduled poll every 5 minutes while actively being used
+    setInterval(checkAndTriggerAutoUpdate, 5 * 60 * 1000);
+
+    // 3. Catch-up trigger when user switches back to the app from background
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            checkAndTriggerAutoUpdate();
+        }
     });
 
     applyTheme();
