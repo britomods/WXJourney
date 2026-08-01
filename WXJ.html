@@ -305,7 +305,6 @@
             top: 100%;
             left: 0;
             right: 0;
-            /*this vv is the underline of the location box*/
             background-color: var(--background);
             border: 1px solid var(--locbox);
             max-height: 150px;
@@ -780,7 +779,6 @@
     const closeWelcomeBtn = document.getElementById('close-welcome-btn');
 
     // Initialize Flatpickr in Range Mode with altInput formatting
-    // Initialize Flatpickr in Range Mode with altInput formatting
     const datePicker = flatpickr("#date-input", {
         mode: "range",
         dateFormat: "Y-m-d", // Keeps the underlying date value standard for calculations
@@ -856,7 +854,7 @@
         } catch (err) { console.error(err); }
     });
 
-    async function fetchWeatherOpenMeteo(lat, lon, dateStr, existingEntryPeriod = null) {
+    async function fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather = null) {
         try {
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${dateStr}&end_date=${dateStr}&hourly=temperature_2m,weathercode&temperature_unit=fahrenheit&timezone=auto`;
             const res = await fetch(url);
@@ -899,12 +897,12 @@
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
-            const buildPeriod = (fetchedTemp, fetchedDesc, isLockedCondition, isPastCondition) => {
+            const buildPeriod = (fetchedTemp, fetchedDesc, isLockedCondition, isPastCondition, existingPeriodData) => {
                 let tempVal = fetchedTemp;
                 let locked = undefined;
-                if (existingEntryPeriod && existingEntryPeriod.lockedTemp !== undefined) {
-                    tempVal = existingEntryPeriod.lockedTemp;
-                    locked = existingEntryPeriod.lockedTemp;
+                if (existingPeriodData && existingPeriodData.lockedTemp !== undefined) {
+                    tempVal = existingPeriodData.lockedTemp;
+                    locked = existingPeriodData.lockedTemp;
                 } else if (isLockedCondition) {
                     tempVal = fetchedTemp;
                     locked = fetchedTemp;
@@ -918,9 +916,9 @@
             };
 
             return {
-                morning: buildPeriod(Math.round(h.temperature_2m[8]), getRangeDesc(8, 13), isPastDate || (isToday && currentHour >= 8), isPastDate || (isToday && currentHour >= 13)),
-                afternoon: buildPeriod(Math.round(h.temperature_2m[14]), getRangeDesc(14, 19), isPastDate || (isToday && currentHour >= 14), isPastDate || (isToday && currentHour >= 19)),
-                evening: buildPeriod(Math.round(h.temperature_2m[20]), getRangeDesc(20, 23), isPastDate || (isToday && currentHour >= 20), isPastDate || (isToday && currentHour >= 23)),
+                morning: buildPeriod(Math.round(h.temperature_2m[8]), getRangeDesc(8, 13), isPastDate || (isToday && currentHour >= 8), isPastDate || (isToday && currentHour >= 13), existingWeather ? existingWeather.morning : null),
+                afternoon: buildPeriod(Math.round(h.temperature_2m[14]), getRangeDesc(14, 19), isPastDate || (isToday && currentHour >= 14), isPastDate || (isToday && currentHour >= 19), existingWeather ? existingWeather.afternoon : null),
+                evening: buildPeriod(Math.round(h.temperature_2m[20]), getRangeDesc(20, 23), isPastDate || (isToday && currentHour >= 20), isPastDate || (isToday && currentHour >= 23), existingWeather ? existingWeather.evening : null),
                 unit: 'fahrenheit',
                 source: 'ECMWF',
                 timezone: tz
@@ -950,7 +948,7 @@
             const datePeriods = periods.filter(p => p.startTime.startsWith(dateStr));
 
             if (datePeriods.length === 0) {
-                return await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather ? existingWeather.morning : null);
+                return await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather);
             }
 
             const getPeriodData = (targetHour, startHour, endHour) => {
@@ -985,7 +983,7 @@
             const nwsHadData = morning || afternoon || evening;
 
             if (!morning || !afternoon || !evening) {
-                const omData = await fetchWeatherOpenMeteo(lat, lon, dateStr);
+                const omData = await fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather);
                 if (omData) {
                     if (!morning) morning = omData.morning;
                     if (!afternoon) afternoon = omData.afternoon;
