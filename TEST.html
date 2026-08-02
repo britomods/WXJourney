@@ -734,7 +734,7 @@
             z-index: 1100;
             align-items: flex-start;
             justify-content: center;
-            padding: 60px 10px 10px 10px;
+            padding: 160px 10px 10px 10px;
             box-sizing: border-box;
         }
 
@@ -906,7 +906,7 @@
         <h2><SPAN STYLE="FONT-WEIGHT:100">WELCOME</SPAN><SPAN STYLE="FONT-WEIGHT:400">TO</SPAN>
             <p style="margin: 0; FONT-WEIGHT:400">WX<SPAN STYLE="FONT-WEIGHT:100">JOURNEY</SPAN></p></h2>
         <div class="intro-text">
-            <p>WXJourney allows you to create a custom weather forecast by date and location.</p>
+            <p>Create custom weather forecasts by date and location.</p>
         </div>
 
         <h3>How to use:</h3>
@@ -935,6 +935,21 @@
             <div class="instruction-card">
                 <span class="instruction-title">Delete a record</span>
                 Press <span class="color-orange">[X]</span> in an existing record to delete the record.
+            </div>
+
+            <div class="instruction-card">
+                <span class="instruction-title">Manage Journeys</span>
+                Press <span class="color-green">[JOURNEYS]</span> to open the Journeys screen where you can view, switch between, create, or delete saved journeys.
+            </div>
+
+            <div class="instruction-card">
+                <span class="instruction-title">Add New Journey</span>
+                In the Journeys screen, press <span class="color-green">[NEW JOURNEY]</span>, enter a name for the new journey, and press <span class="color-add">[+]</span> to save thejourney.
+            </div>
+
+            <div class="instruction-card">
+                <span class="instruction-title">Save Daily Journey</span>
+                In the Journeys screen, press <span class="color-green">[SAVE DAILY JOURNEY]</span>, enter a name, and press <span class="color-add">[+]</span> to save a duplicate copy of your Daily Journey entries under a new name.
             </div>
         </div>
         <div class="intro-text">
@@ -1645,7 +1660,7 @@
 
     refreshBtn.addEventListener('click', async () => {
         const btnSpan = refreshBtn.querySelector('span') || refreshBtn;
-        btnSpan.textContent = "WAIT";
+        btnSpan.textContent = "WAIT...";
         const entries = getCurrentJourneyEntries();
         
         for (let e of entries) {
