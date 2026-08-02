@@ -959,6 +959,7 @@
         <p>Forecast data automatically refreshes at 3AM, 9AM, 3PM, and 9PM UTC. No data loss occurs if the app attempts a refresh when no data connection is present.</p>
         <p>The temperatures displayed for AM, PM, and EV are the predicted temperatures for 8AM, 2PM, and 8PM respectively.</p>
         <p>The weather conditions displayed are for a range of six hours after the start of the respective time period.</p>
+        <p>Tapping the location name in a record will open the Windy.com website for that location.</p>
         </div>
         <div class="instruction-text madeby-text">
         <SPAN STYLE="FONT-WEIGHT:300">created by </SPAN><SPAN STYLE="FONT-WEIGHT:bold">BRITO</SPAN><SPAN STYLE="FONT-WEIGHT:300">MODS</SPAN>
@@ -970,6 +971,15 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
+    function openWindy(lat, lon) {
+        const webUrl = `https://www.windy.com/${lat}/${lon}?radar,${lat},${lon},11,detail`;
+        if (window.AndroidInterface && typeof window.AndroidInterface.openExternalUrl === 'function') {
+            window.AndroidInterface.openExternalUrl(webUrl);
+        } else {
+            window.open(webUrl, '_blank', 'noopener,noreferrer');
+        }
+    }
+
     let allJourneys = JSON.parse(localStorage.getItem('wxjourney_multi_v1')) || [];
     
     // Ensure default_journey is present in allJourneys
@@ -1548,6 +1558,8 @@
                 `;
             }
 
+            const windyUrl = `https://www.windy.com/${entry.lat}/${entry.lon}?radar,${entry.lat},${entry.lon},11,detail`;
+
             const card = document.createElement('div');
             card.className = 'entry-card';
             card.innerHTML = `
@@ -1564,7 +1576,9 @@
                     </div>
                     <div class="entry-row-bottom">
                         <span class="location-text">
-                            ${entry.name}${entry.state ? ', ' + entry.state : ''}
+                            <a href="${windyUrl}" onclick="event.preventDefault(); openWindy(${entry.lat}, ${entry.lon});" style="color: inherit; text-decoration: none;">
+                                ${entry.name}${entry.state ? ', ' + entry.state : ''}
+                            </a>
                         </span>
                         <span class="country-text">${entry.country}</span>
                     </div>
