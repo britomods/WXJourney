@@ -134,7 +134,25 @@
             letter-spacing: 6px;
             margin-top: 0;
             margin-bottom: 0;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
+            font-size: 1.5rem;
+            text-align: left;
+            box-sizing: border-box;
+            line-height: 1.1;
+
+            /* Responsive underline fixes */
+            width: fit-content;
+            border-bottom: 1px solid var(--underlines);
+        }
+
+        h2 {
+            color: var(--header);
+            text-transform: uppercase;
+            font-weight: 400;
+            letter-spacing: 6px;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-bottom: 5px;
             font-size: 1.5rem;
             text-align: left;
             box-sizing: border-box;
@@ -160,6 +178,8 @@
             flex-shrink: 0;
             cursor: pointer;
             font-family: inherit;
+            container-type: inline-size;
+            font-size: clamp(0.5rem, 30cqw, 0.85rem);
         }
 
         .theme-btn {
@@ -177,9 +197,31 @@
             flex-shrink: 0;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.65rem;
             line-height: 1;
             text-align: center;
+            container-type: inline-size;
+            font-size: clamp(0.4rem, 22cqw, 0.65rem);
+        }
+
+        .journeys-btn {
+            background: transparent;
+            color: var(--weekday);
+            border: 1px solid var(--weekday);
+            padding: 0;
+            font-weight: normal;
+            height: 28px;
+            width: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            cursor: pointer;
+            font-family: inherit;
+            line-height: 1;
+            text-align: center;
+            container-type: inline-size;
+            font-size: clamp(0.4rem, 18cqw, 0.65rem);
         }
 
         .controls-container {
@@ -213,6 +255,7 @@
         /* Main Location Input Styling */
         #location-input {
             width: 100%;
+            height: 38px;
             padding: 10px;
             background-color: var(--background);
             border: 1px solid var(--locbox);
@@ -220,6 +263,12 @@
             font-family: inherit;
             box-sizing: border-box;
             font-size: 0.9rem;
+        }
+
+        #location-input:focus {
+            background-color: var(--background);
+            color: var(--locbox);
+            outline: none;
         }
 
         /* Control Panel Height Matching */
@@ -256,10 +305,16 @@
         #add-btn {
             color: var(--addbutton);
             border: 1px solid var(--addbutton);
-            font-size: 1.2rem;
             font-weight: normal;
             padding: 0 10px;
             width: 38px;
+            height: 38px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            container-type: inline-size;
+            font-size: clamp(0.8rem, 50cqw, 1.2rem);
         }
 
         /* Unit Toggle Styling */
@@ -275,12 +330,13 @@
             overflow: hidden;
             white-space: nowrap;
             box-sizing: border-box;
+            container-type: inline-size;
         }
 
         #temp-toggle-btn span {
             color: var(--tempunitoff);
             font-weight: normal;
-            font-size: 0.75rem;
+            font-size: clamp(0.5rem, 20cqw, 0.75rem);
             transition: all 0.2s;
             white-space: nowrap;
         }
@@ -288,7 +344,7 @@
         #temp-toggle-btn .active-unit {
             color: var(--tempuniton);
             font-weight: 900;
-            font-size: 0.95rem;
+            font-size: clamp(0.6rem, 26cqw, 0.95rem);
             text-decoration: none;
         }
 
@@ -296,8 +352,18 @@
             color: var(--refreshbtn);
             border: 1px solid var(--refreshbtn);
             padding: 0 8px;
-            font-size: 0.85rem;
             font-weight: normal;
+            container-type: inline-size;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;             /* <-- ADD THIS: Allows the button to expand into available row space */
+            min-width: 65px;     /* <-- ADD THIS: Prevents the border from collapsing narrower than 65px */
+        }
+
+        #refresh-btn span {
+            font-size: clamp(0.55rem, 18cqw, 0.85rem); /* Adjusted preferred cqw from 16cqw to 18cqw */
+            white-space: nowrap;
         }
 
         #suggestions {
@@ -324,7 +390,7 @@
 
         #suggestions li:hover {
             background-color: var(--recordborder1);
-            color: white;
+            color: rgb(252, 252, 252);
         }
 
         /* Journey Cards */
@@ -420,6 +486,31 @@
             justify-content: center;
             box-sizing: border-box;
             flex-shrink: 0;
+            container-type: inline-size;
+            font-size: clamp(0.5rem, 50cqw, 0.9rem);
+        }
+
+        .absolute-close-btn {
+            background: transparent;
+            color: var(--xbutton);
+            border: 1px solid var(--xbutton);
+            padding: 0;
+            font-weight: bold;
+            height: 38px;
+            width: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: inherit;
+            container-type: inline-size;
+            font-size: clamp(0.5rem, 45cqw, 1rem);
         }
 
         /* Edit Date Inputs inside Cards */
@@ -432,7 +523,7 @@
             height: auto !important;
             min-height: 24px;
             width: fit-content;
-            max-width: 125px;
+            max-width: 90px;
             box-sizing: border-box;
             font-weight: normal;
             font-size: 0.7rem;
@@ -476,7 +567,7 @@
             text-overflow: ellipsis;
         }
 
-        /* Welcome Overlay */
+        /* Welcome Overlay & Journeys Page Overlay */
         .welcome-overlay {
             display: none;
             position: fixed;
@@ -510,7 +601,7 @@
             line-height: 1.4;
         }
 
-        .welcome-overlay h1 {
+        .welcome-overlay h2 {
             color: var(--header);
             text-transform: uppercase;
             letter-spacing: 6px;
@@ -519,11 +610,11 @@
             padding-bottom: 5px;
             font-size: 1.5rem;
             text-align: left;
-            border-bottom: 3px solid var(--underlines);
+            border-bottom: 1px solid var(--underlines);
             background: none;
         }
 
-        .welcome-overlay h2 {
+        .welcome-overlay h3 {
             color: var(--header);
             font-size: 1.1rem;
             border-bottom: 1px solid var(--underlines);
@@ -569,25 +660,125 @@
             padding-bottom: 2px;
         }
 
-        .welcome-overlay .remove-btn {
-            background: transparent;
-            color: var(--xbutton);
-            border: 1px solid var(--xbutton);
-            padding: 0;
+        /* Journey Manager Specific Styles */
+        .journeys-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .journeys-header-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        #journey-page-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .daily-journey-record-card {
+            background-color: var(--background);
+            border: 1px solid var(--weekday);
+            padding: 12px;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            container-type: inline-size;
+        }
+
+        .daily-journey-record-card:hover {
+            border-color: var(--recordborder1);
+        }
+
+        .journey-record-card {
+            background-color: var(--background);
+            border: 1px solid var(--recordborder1);
+            padding: 12px;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            container-type: inline-size;
+        }
+
+        .journey-record-card:hover {
+            border-color: var(--weekday);
+        }
+
+        .journey-record-name {
+            color: var(--cities);
+            font-size: clamp(0.55rem, 5cqw, 1rem);
             font-weight: bold;
-            height: 28px;
-            width: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .journey-modal-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            background-color: var(--welcomebackground);
+            z-index: 1100;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 160px 10px 10px 10px;
+            box-sizing: border-box;
+        }
+
+        .journey-modal-content {
+            background-color: var(--background);
+            border: 2px solid var(--welcomeborder);
+            padding: 15px;
+            width: 100%;
+            max-width: 350px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .journey-modal-content input[type="text"] {
+            width: 100%;
+            height: 38px;
+            padding: 10px;
+            background-color: var(--background);
+            border: 1px solid var(--locbox);
+            color: var(--locbox);
+            font-family: inherit;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+
+        #journey-dialog-save {
+            color: var(--addbutton);
+            border: 1px solid var(--addbutton);
+            width: 38px;
+            height: 38px;
+            font-weight: normal;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-sizing: border-box;
+            padding: 0;
             flex-shrink: 0;
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-family: inherit;
+            background: transparent;
+            box-sizing: border-box;
+            container-type: inline-size;
+            font-size: clamp(0.8rem, 50cqw, 1.2rem);
         }
 
         .color-blue { color: var(--header); font-weight: bold; }
@@ -648,6 +839,7 @@
 <div class="header-container">
     <h1>WX<SPAN STYLE="FONT-WEIGHT:100">Journey</SPAN></h1>
     <div class="header-buttons">
+        <button class="journeys-btn" id="open-journeys-btn">JOURNEYS</button>
         <button class="theme-btn" id="theme-toggle-btn">LIGHT<br>MODE</button>
         <button class="info-btn" id="open-welcome-btn">info</button>
     </div>
@@ -667,23 +859,57 @@
             <span id="label-f">° F</span>
             <span id="label-c">° C</span>
         </button>
-        <button id="refresh-btn">Refresh</button>
+        <button id="refresh-btn"><span>Refresh</span></button>
     </div>
 </div>
 
 <div id="journey-list"></div>
 
+<!-- Journeys Page Overlay -->
+<div class="welcome-overlay" id="journeys-modal">
+    <div class="controls-container" style="max-width: 400px;">
+        <div class="journeys-header-row">
+            <h2><SPAN STYLE="FONT-WEIGHT:100">JOURNEYS</SPAN></h2>
+            <div class="journeys-header-actions">
+                <button class="absolute-close-btn" id="close-journeys-btn">X</button>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; width: 100%; margin-bottom: 10px;">
+            <div class="daily-journey-record-card" id="save-current-btn" style="flex: 2; justify-content: center; padding: 12px 4px; height: auto; min-height: unset;">
+                <span class="journey-record-name" style="font-size: clamp(0.55rem, 7.5cqw, 0.9rem); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">SAVE DAILY JOURNEY</span>
+            </div>
+            <div class="daily-journey-record-card" id="journey-add-btn" style="flex: 1; justify-content: center; padding: 12px 4px; height: auto; min-height: unset;">
+                <span class="journey-record-name" style="font-size: clamp(0.55rem, 11.5cqw, 0.9rem); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">NEW JOURNEY</span>
+            </div>
+        </div>
+
+        <div id="journey-page-list"></div>
+    </div>
+</div>
+
+<!-- Add Journey Dialog Box -->
+<div class="journey-modal-dialog" id="journey-name-dialog">
+    <div class="journey-modal-content">
+        <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
+            <input type="text" id="journey-name-input" placeholder="Journey Name..." autocomplete="off" style="flex: 1;">
+            <button id="journey-dialog-save">+</button>
+            <button class="remove-btn" id="close-journey-dialog-btn" style="height: 38px; width: 38px;">X</button>
+        </div>
+    </div>
+</div>
+
 <!-- Integrated Welcome Panel Overlay -->
 <div class="welcome-overlay" id="welcome-modal">
     <div class="controls-container">
-        <button class="remove-btn" id="close-welcome-btn">X</button>
-        <h1><SPAN STYLE="FONT-WEIGHT:100">WELCOME</SPAN><SPAN STYLE="FONT-WEIGHT:400">TO</SPAN>
-            <p style="margin: 0; FONT-WEIGHT:400">WX<SPAN STYLE="FONT-WEIGHT:100">JOURNEY</SPAN></p></h1>
+        <button class="absolute-close-btn" id="close-welcome-btn">X</button>
+        <h2><SPAN STYLE="FONT-WEIGHT:100">WELCOME</SPAN><SPAN STYLE="FONT-WEIGHT:400">TO</SPAN>
+            <p style="margin: 0; FONT-WEIGHT:400">WX<SPAN STYLE="FONT-WEIGHT:100">JOURNEY</SPAN></p></h2>
         <div class="intro-text">
-            <p>WXJourney allows you to create a custom weather forecast by date and location.</p>
+            <p>Create custom weather forecasts by date and location.</p>
         </div>
 
-        <h2>How to use:</h2>
+        <h3>How to use:</h3>
 
         <div class="instruction-list">
             <div class="instruction-card">
@@ -710,6 +936,21 @@
                 <span class="instruction-title">Delete a record</span>
                 Press <span class="color-orange">[X]</span> in an existing record to delete the record.
             </div>
+
+            <div class="instruction-card">
+                <span class="instruction-title">Manage Journeys</span>
+                Press <span class="color-green">[JOURNEYS]</span> to open the Journeys screen where you can view, switch between, create, or delete saved journeys.
+            </div>
+
+            <div class="instruction-card">
+                <span class="instruction-title">Add New Journey</span>
+                In the Journeys screen, press <span class="color-green">[NEW JOURNEY]</span>, enter a name for the new journey, and press <span class="color-add">[+]</span> to save thejourney.
+            </div>
+
+            <div class="instruction-card">
+                <span class="instruction-title">Save Daily Journey</span>
+                In the Journeys screen, press <span class="color-green">[SAVE DAILY JOURNEY]</span>, enter a name, and press <span class="color-add">[+]</span> to save a duplicate copy of your Daily Journey entries under a new name.
+            </div>
         </div>
         <div class="intro-text">
         <p>Forecast data is provided by the National Weather Service (NWS) and the European Centre for Medium-Range Weather Forecasts (ECMWF).</p>
@@ -729,7 +970,35 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-    let journeyEntries = JSON.parse(localStorage.getItem('wxjourney_v16')) || [];
+    let allJourneys = JSON.parse(localStorage.getItem('wxjourney_multi_v1')) || [];
+    
+    // Ensure default_journey is present in allJourneys
+    let defaultJourney = allJourneys.find(j => j.id === 'default_journey');
+    if (!defaultJourney) {
+        defaultJourney = { 
+            id: 'default_journey', 
+            name: 'Daily Journey', 
+            entries: JSON.parse(localStorage.getItem('wxjourney_v16')) || [] 
+        };
+        allJourneys.unshift(defaultJourney);
+    }
+
+    let currentJourneyId = localStorage.getItem('wxjourney_active_id') || 'default_journey';
+    if (!allJourneys.some(j => j.id === currentJourneyId)) {
+        currentJourneyId = 'default_journey';
+    }
+
+    // Helper to get active journey's entries reference
+    function getCurrentJourneyEntries() {
+        let j = allJourneys.find(item => item.id === currentJourneyId);
+        if (!j) {
+            currentJourneyId = 'default_journey';
+            j = allJourneys.find(item => item.id === 'default_journey');
+        }
+        return j.entries;
+    }
+
+    let journeyEntries = getCurrentJourneyEntries();
     let tempUnit = 'fahrenheit';
     let selectedLocationInfo = null;
 
@@ -778,12 +1047,153 @@
     const openWelcomeBtn = document.getElementById('open-welcome-btn');
     const closeWelcomeBtn = document.getElementById('close-welcome-btn');
 
+    // Journeys Page DOM Bindings
+    const journeysModal = document.getElementById('journeys-modal');
+    const openJourneysBtn = document.getElementById('open-journeys-btn');
+    const closeJourneysBtn = document.getElementById('close-journeys-btn');
+    const journeyPageList = document.getElementById('journey-page-list');
+    
+    // New Dedicated Action Buttons
+    const journeyAddBtn = document.getElementById('journey-add-btn');
+    const saveCurrentBtn = document.getElementById('save-current-btn');
+
+    let isDuplicatingDaily = false;
+
+    // Journey Name Dialog DOM Bindings
+    const journeyNameDialog = document.getElementById('journey-name-dialog');
+    const journeyNameInput = document.getElementById('journey-name-input');
+    const closeJourneyDialogBtn = document.getElementById('close-journey-dialog-btn');
+    const journeyDialogSave = document.getElementById('journey-dialog-save');
+
+    openJourneysBtn.addEventListener('click', () => {
+        renderJourneyPageList();
+        journeysModal.style.display = 'flex';
+    });
+
+    closeJourneysBtn.addEventListener('click', () => {
+        journeysModal.style.display = 'none';
+    });
+
+    journeyAddBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation(); 
+        isDuplicatingDaily = false; // Normal add new journey
+        journeyNameInput.value = '';
+        journeyNameDialog.style.display = 'flex';
+        journeyNameInput.focus();
+    });
+
+    saveCurrentBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation(); 
+        isDuplicatingDaily = true; // Sets flag so save will copy current entries
+        journeyNameInput.value = '';
+        journeyNameDialog.style.display = 'flex';
+        journeyNameInput.focus();
+    });
+
+    closeJourneyDialogBtn.addEventListener('click', () => {
+        journeyNameDialog.style.display = 'none';
+        isDuplicatingDaily = false; // Reset on cancel
+    });
+
+    journeyDialogSave.addEventListener('click', () => {
+        const nameVal = journeyNameInput.value.trim();
+        if (nameVal) {
+            const newId = Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5);
+            let initialEntries = [];
+
+            if (isDuplicatingDaily) {
+                // Now copies the active journey rather than strictly the default one
+                const targetJ = allJourneys.find(j => j.id === currentJourneyId);
+                if (targetJ && targetJ.entries) {
+                    // Deep copy entries and assign new IDs to prevent reference issues
+                    initialEntries = JSON.parse(JSON.stringify(targetJ.entries)).map(entry => {
+                        return {
+                            ...entry,
+                            id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5)
+                        };
+                    });
+                }
+            }
+
+            allJourneys.push({
+                id: newId,
+                name: nameVal,
+                entries: initialEntries
+            });
+            saveAllJourneys();
+            renderJourneyPageList();
+            journeyNameDialog.style.display = 'none';
+            isDuplicatingDaily = false; // Reset state
+        }
+    });
+
+    function saveAllJourneys() {
+        localStorage.setItem('wxjourney_multi_v1', JSON.stringify(allJourneys));
+        localStorage.setItem('wxjourney_active_id', currentJourneyId);
+        // Maintain backwards compatibility with single forecast storage key (saving default journey or active)
+        const defJ = allJourneys.find(j => j.id === 'default_journey');
+        if (defJ) {
+            localStorage.setItem('wxjourney_v16', JSON.stringify(defJ.entries));
+        }
+    }
+
+    function renderJourneyPageList() {
+        journeyPageList.innerHTML = '';
+        allJourneys.forEach(j => {
+            const card = document.createElement('div');
+            card.className = 'journey-record-card';
+            
+            // Make the entire card clickable to load the journey
+            card.onclick = () => {
+                currentJourneyId = j.id;
+                journeyEntries = getCurrentJourneyEntries();
+                saveAllJourneys();
+                journeysModal.style.display = 'none';
+                renderList();
+            };
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'journey-record-name';
+            nameSpan.textContent = j.name;
+            nameSpan.style.flex = '1';
+
+            const actionsDiv = document.createElement('div');
+            actionsDiv.style.display = 'flex';
+            actionsDiv.style.alignItems = 'center';
+            actionsDiv.style.gap = '6px';
+
+            // Only render the delete (X) button for non-default journeys
+            if (j.id !== 'default_journey') {
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.textContent = 'X';
+                removeBtn.onclick = (ev) => {
+                    ev.stopPropagation(); // Prevents card's click event (opening the journey) when deleting
+                    allJourneys = allJourneys.filter(item => item.id !== j.id);
+                    if (currentJourneyId === j.id) {
+                        currentJourneyId = 'default_journey';
+                        journeyEntries = getCurrentJourneyEntries();
+                    }
+                    saveAllJourneys();
+                    renderJourneyPageList();
+                    renderList();
+                };
+                actionsDiv.appendChild(removeBtn);
+            }
+
+            card.appendChild(nameSpan);
+            card.appendChild(actionsDiv);
+
+            journeyPageList.appendChild(card);
+        });
+    }
+
     // Initialize Flatpickr in Range Mode with altInput formatting
     const datePicker = flatpickr("#date-input", {
         mode: "range",
         dateFormat: "Y-m-d", // Keeps the underlying date value standard for calculations
         altInput: true,
-        altFormat: "d-M",   // <--- Changed from "d-M-Y" to "d-M"
+        altFormat: "d-M",   
         conjunction: " to ",
         onClose: function(selectedDates, dateStr, instance) {
             if (selectedDates.length === 1) {
@@ -1064,6 +1474,7 @@
     }
 
     function renderList() {
+        journeyEntries = getCurrentJourneyEntries();
         journeyEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
         
         journeyEntries.forEach(entry => {
@@ -1108,7 +1519,7 @@
             }
         });
 
-        localStorage.setItem('wxjourney_v16', JSON.stringify(journeyEntries));
+        saveAllJourneys();
         journeyListContainer.innerHTML = '';
 
         journeyEntries.forEach(entry => {
@@ -1173,14 +1584,15 @@
                 disableMobile: true,
                 onChange: async (selectedDates, dateStr) => {
                     const id = input.getAttribute('data-id');
-                    const entry = journeyEntries.find(i => i.id === id);
+                    const entries = getCurrentJourneyEntries();
+                    const entry = entries.find(i => i.id === id);
                     if (entry && dateStr && entry.date !== dateStr) {
                         entry.date = dateStr;
                         entry.weather = null;
                         renderList();
 
                         const newWeather = await fetchWeather(entry.lat, entry.lon, entry.date, entry.country, null);
-                        const currentEntry = journeyEntries.find(i => i.id === id);
+                        const currentEntry = entries.find(i => i.id === id);
                         if (currentEntry && currentEntry.date === entry.date) {
                             currentEntry.weather = newWeather;
                             renderList();
@@ -1211,10 +1623,11 @@
 
         addBtn.textContent = "...";
         const locInfo = { ...selectedLocationInfo };
+        const entries = getCurrentJourneyEntries();
 
         for (const dateVal of datesToFetch) {
             const weather = await fetchWeather(locInfo.lat, locInfo.lon, dateVal, locInfo.country, null);
-            journeyEntries.push({
+            entries.push({
                 id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5),
                 ...locInfo,
                 date: dateVal,
@@ -1237,14 +1650,20 @@
     });
 
     window.removeEntry = (id) => {
-        journeyEntries = journeyEntries.filter(e => e.id !== id);
+        let entries = getCurrentJourneyEntries();
+        let j = allJourneys.find(item => item.id === currentJourneyId);
+        if (j) {
+            j.entries = entries.filter(e => e.id !== id);
+        }
         renderList();
     };
 
     refreshBtn.addEventListener('click', async () => {
-        refreshBtn.textContent = "WAIT";
+        const btnSpan = refreshBtn.querySelector('span') || refreshBtn;
+        btnSpan.textContent = "WAIT...";
+        const entries = getCurrentJourneyEntries();
         
-        for (let e of journeyEntries) {
+        for (let e of entries) {
             try {
                 const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country, e.weather);
                 if (newWeather !== null) {
@@ -1255,7 +1674,7 @@
             }
         }
         
-        refreshBtn.textContent = "REFRESH";
+        btnSpan.textContent = "REFRESH";
         renderList();
     });
 
@@ -1265,21 +1684,20 @@
     let lastAutoUpdateHour = localStorage.getItem('wxjourney_last_update_hour') !== null ? parseInt(localStorage.getItem('wxjourney_last_update_hour'), 10) : null;
 
     async function performAutoUpdate() {
-        if (journeyEntries.length === 0) return;
-        refreshBtn.textContent = "SYNC...";
-        
-        for (let e of journeyEntries) {
-            try {
-                const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country, e.weather);
-                if (newWeather !== null) {
-                    e.weather = newWeather;
+        for (let journey of allJourneys) {
+            if (journey.entries.length === 0) continue;
+            for (let e of journey.entries) {
+                try {
+                    const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country, e.weather);
+                    if (newWeather !== null) {
+                        e.weather = newWeather;
+                    }
+                } catch (err) {
+                    console.warn("Auto-update failed for entry, using cached data.", err);
                 }
-            } catch (err) {
-                console.warn("Auto-update failed for entry, using cached data.", err);
             }
         }
-        
-        refreshBtn.textContent = "REFRESH";
+        saveAllJourneys();
         renderList();
     }
 
@@ -1288,7 +1706,6 @@
         const utcHour = now.getUTCHours();
         const utcDay = now.getUTCDate().toString();
 
-        // Catch-up check: If the current hour matches or has passed a scheduled UTC hour that was missed
         const targetPassed = TARGET_UTC_HOURS.some(target => utcHour >= target);
         
         if (TARGET_UTC_HOURS.includes(utcHour) || targetPassed) {
@@ -1297,18 +1714,18 @@
                 lastAutoUpdateHour = utcHour;
                 localStorage.setItem('wxjourney_last_update_day', utcDay);
                 localStorage.setItem('wxjourney_last_update_hour', utcHour);
-                performAutoUpdate();
+                const btnSpan = refreshBtn.querySelector('span') || refreshBtn;
+                btnSpan.textContent = "SYNC...";
+                performAutoUpdate().then(() => {
+                    btnSpan.textContent = "REFRESH";
+                });
             }
         }
     }
 
-    // 1. Initial check when app opens/loads
     checkAndTriggerAutoUpdate();
-
-    // 2. Scheduled poll every 5 minutes while actively being used
     setInterval(checkAndTriggerAutoUpdate, 5 * 60 * 1000);
 
-    // 3. Catch-up trigger when user switches back to the app from background
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
             checkAndTriggerAutoUpdate();
