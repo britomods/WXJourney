@@ -34,7 +34,7 @@
             --tempunitoff: #f706cf80;
             --tempunitborder: #f706cf;
             --country: #f706cf;
-            --wxsource: #347D75;
+            --wxsource: #347D75;  
             --weekday: #00ffa3;
             --datepicker: #00ffa3;
             --conditions: #f0f0f0;
@@ -63,7 +63,7 @@
             --tempunitoff: #E97DB180;
             --tempunitborder: #E97DB1;
             --country: #E97DB1;
-            --wxsource: #00c3ec;
+            --wxsource: #00c3ec; 
             --weekday: #53ecb5;
             --datepicker: #53ecb5;
             --conditions: #f0f0f0;
@@ -92,7 +92,7 @@
             --tempunitoff: #37825880;
             --tempunitborder: #378258;
             --country: #378258;
-            --wxsource: #735585;
+            --wxsource: #735585; 
             --weekday: #11978e;
             --datepicker: #11978e;
             --conditions: #b2b2b2;
@@ -178,6 +178,8 @@
             flex-shrink: 0;
             cursor: pointer;
             font-family: inherit;
+            container-type: inline-size;
+            font-size: clamp(0.5rem, 30cqw, 0.85rem);
         }
 
         .theme-btn {
@@ -195,9 +197,10 @@
             flex-shrink: 0;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.65rem;
             line-height: 1;
             text-align: center;
+            container-type: inline-size;
+            font-size: clamp(0.4rem, 22cqw, 0.65rem);
         }
 
         .journeys-btn {
@@ -215,9 +218,10 @@
             flex-shrink: 0;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.65rem;
             line-height: 1;
             text-align: center;
+            container-type: inline-size;
+            font-size: clamp(0.4rem, 18cqw, 0.65rem);
         }
 
         .controls-container {
@@ -261,6 +265,12 @@
             font-size: 0.9rem;
         }
 
+        #location-input:focus {
+            background-color: var(--background);
+            color: var(--locbox);
+            outline: none;
+        }
+
         /* Control Panel Height Matching */
         .date-plus-group input, #add-btn, #temp-toggle-btn, #refresh-btn {
             height: 38px;
@@ -295,7 +305,6 @@
         #add-btn {
             color: var(--addbutton);
             border: 1px solid var(--addbutton);
-            font-size: 1.2rem;
             font-weight: normal;
             padding: 0 10px;
             width: 38px;
@@ -304,6 +313,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            container-type: inline-size;
+            font-size: clamp(0.8rem, 50cqw, 1.2rem);
         }
 
         /* Unit Toggle Styling */
@@ -319,12 +330,13 @@
             overflow: hidden;
             white-space: nowrap;
             box-sizing: border-box;
+            container-type: inline-size;
         }
 
         #temp-toggle-btn span {
             color: var(--tempunitoff);
             font-weight: normal;
-            font-size: 0.75rem;
+            font-size: clamp(0.5rem, 20cqw, 0.75rem);
             transition: all 0.2s;
             white-space: nowrap;
         }
@@ -332,7 +344,7 @@
         #temp-toggle-btn .active-unit {
             color: var(--tempuniton);
             font-weight: 900;
-            font-size: 0.95rem;
+            font-size: clamp(0.6rem, 26cqw, 0.95rem);
             text-decoration: none;
         }
 
@@ -340,8 +352,18 @@
             color: var(--refreshbtn);
             border: 1px solid var(--refreshbtn);
             padding: 0 8px;
-            font-size: 0.85rem;
             font-weight: normal;
+            container-type: inline-size;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;             /* <-- ADD THIS: Allows the button to expand into available row space */
+            min-width: 65px;     /* <-- ADD THIS: Prevents the border from collapsing narrower than 65px */
+        }
+
+        #refresh-btn span {
+            font-size: clamp(0.55rem, 18cqw, 0.85rem); /* Adjusted preferred cqw from 16cqw to 18cqw */
+            white-space: nowrap;
         }
 
         #suggestions {
@@ -464,6 +486,8 @@
             justify-content: center;
             box-sizing: border-box;
             flex-shrink: 0;
+            container-type: inline-size;
+            font-size: clamp(0.5rem, 50cqw, 0.9rem);
         }
 
         .absolute-close-btn {
@@ -485,6 +509,8 @@
             cursor: pointer;
             text-transform: uppercase;
             font-family: inherit;
+            container-type: inline-size;
+            font-size: clamp(0.5rem, 45cqw, 1rem);
         }
 
         /* Edit Date Inputs inside Cards */
@@ -653,7 +679,7 @@
             flex-direction: column;
             gap: 10px;
         }
-
+        
         .daily-journey-record-card {
             background-color: var(--background);
             border: 1px solid var(--weekday);
@@ -663,6 +689,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            container-type: inline-size;
         }
 
         .daily-journey-record-card:hover {
@@ -678,6 +705,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            container-type: inline-size;
         }
 
         .journey-record-card:hover {
@@ -686,7 +714,7 @@
 
         .journey-record-name {
             color: var(--cities);
-            font-size: 1rem;
+            font-size: clamp(0.55rem, 5cqw, 1rem);
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -704,9 +732,9 @@
             height: 100dvh;
             background-color: var(--welcomebackground);
             z-index: 1100;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            padding: 10px;
+            padding: 60px 10px 10px 10px;
             box-sizing: border-box;
         }
 
@@ -740,7 +768,6 @@
             border: 1px solid var(--addbutton);
             width: 38px;
             height: 38px;
-            font-size: 1.2rem;
             font-weight: normal;
             cursor: pointer;
             display: flex;
@@ -750,6 +777,8 @@
             flex-shrink: 0;
             background: transparent;
             box-sizing: border-box;
+            container-type: inline-size;
+            font-size: clamp(0.8rem, 50cqw, 1.2rem);
         }
 
         .color-blue { color: var(--header); font-weight: bold; }
@@ -830,7 +859,7 @@
             <span id="label-f">° F</span>
             <span id="label-c">° C</span>
         </button>
-        <button id="refresh-btn">Refresh</button>
+        <button id="refresh-btn"><span>Refresh</span></button>
     </div>
 </div>
 
@@ -842,16 +871,16 @@
         <div class="journeys-header-row">
             <h2><SPAN STYLE="FONT-WEIGHT:100">JOURNEYS</SPAN></h2>
             <div class="journeys-header-actions">
-                <button class="remove-btn" id="close-journeys-btn">X</button>
+                <button class="absolute-close-btn" id="close-journeys-btn">X</button>
             </div>
         </div>
-
+        
         <div style="display: flex; gap: 10px; width: 100%; margin-bottom: 10px;">
             <div class="daily-journey-record-card" id="save-current-btn" style="flex: 2; justify-content: center; padding: 12px 4px; height: auto; min-height: unset;">
-                <span class="journey-record-name" style="font-size: clamp(0.5rem, 2.5vw, 0.85rem); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">SAVE DAILY AS<br>NEW JOURNEY</span>
+                <span class="journey-record-name" style="font-size: clamp(0.55rem, 7.5cqw, 0.9rem); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">SAVE DAILY JOURNEY</span>
             </div>
             <div class="daily-journey-record-card" id="journey-add-btn" style="flex: 1; justify-content: center; padding: 12px 4px; height: auto; min-height: unset;">
-                <span class="journey-record-name" style="font-size: clamp(0.5rem, 2.5vw, 0.85rem); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">NEW JOURNEY</span>
+                <span class="journey-record-name" style="font-size: clamp(0.55rem, 11.5cqw, 0.9rem); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">NEW JOURNEY</span>
             </div>
         </div>
 
@@ -909,16 +938,16 @@
             </div>
         </div>
         <div class="intro-text">
-            <p>Forecast data is provided by the National Weather Service (NWS) and the European Centre for Medium-Range Weather Forecasts (ECMWF).</p>
-            <p>NWS date is available for 7 days from the current date and is used for locations within the U.S.</p>
-            <p>ECMWF data is available for 15 days from the current date and is used for locations outside of the U.S. or when NWS data is not available.</p>
-            <p>Forecast data automatically refreshes at 3AM, 9AM, 3PM, and 9PM UTC. No data loss occurs if the app attempts a refresh when no data connection is present.</p>
-            <p>The temperatures displayed for AM, PM, and EV are the predicted temperatures for 8AM, 2PM, and 8PM respectively.</p>
-            <p>The weather conditions displayed are for a range of six hours after the start of the respective time period.</p>
+        <p>Forecast data is provided by the National Weather Service (NWS) and the European Centre for Medium-Range Weather Forecasts (ECMWF).</p>
+        <p>NWS date is available for 7 days from the current date and is used for locations within the U.S.</p>
+        <p>ECMWF data is available for 15 days from the current date and is used for locations outside of the U.S. or when NWS data is not available.</p>
+        <p>Forecast data automatically refreshes at 3AM, 9AM, 3PM, and 9PM UTC. No data loss occurs if the app attempts a refresh when no data connection is present.</p>
+        <p>The temperatures displayed for AM, PM, and EV are the predicted temperatures for 8AM, 2PM, and 8PM respectively.</p>
+        <p>The weather conditions displayed are for a range of six hours after the start of the respective time period.</p>
         </div>
         <div class="instruction-text madeby-text">
-            <SPAN STYLE="FONT-WEIGHT:300">created by </SPAN><SPAN STYLE="FONT-WEIGHT:bold">BRITO</SPAN><SPAN STYLE="FONT-WEIGHT:300">MODS</SPAN>
-        </div>
+        <SPAN STYLE="FONT-WEIGHT:300">created by </SPAN><SPAN STYLE="FONT-WEIGHT:bold">BRITO</SPAN><SPAN STYLE="FONT-WEIGHT:300">MODS</SPAN>
+    </div>
     </div>
 </div>
 
@@ -927,14 +956,14 @@
 
 <script>
     let allJourneys = JSON.parse(localStorage.getItem('wxjourney_multi_v1')) || [];
-
+    
     // Ensure default_journey is present in allJourneys
     let defaultJourney = allJourneys.find(j => j.id === 'default_journey');
     if (!defaultJourney) {
-        defaultJourney = {
-            id: 'default_journey',
-            name: 'Daily Journey',
-            entries: JSON.parse(localStorage.getItem('wxjourney_v16')) || []
+        defaultJourney = { 
+            id: 'default_journey', 
+            name: 'Daily Journey', 
+            entries: JSON.parse(localStorage.getItem('wxjourney_v16')) || [] 
         };
         allJourneys.unshift(defaultJourney);
     }
@@ -971,7 +1000,7 @@
 
     function applyTheme() {
         document.body.classList.remove('light-mode', 'dull-mode');
-
+        
         if (currentTheme === 'light') {
             document.body.classList.add('light-mode');
             themeToggleBtn.innerHTML = 'DULL<br>MODE';
@@ -1008,7 +1037,7 @@
     const openJourneysBtn = document.getElementById('open-journeys-btn');
     const closeJourneysBtn = document.getElementById('close-journeys-btn');
     const journeyPageList = document.getElementById('journey-page-list');
-
+    
     // New Dedicated Action Buttons
     const journeyAddBtn = document.getElementById('journey-add-btn');
     const saveCurrentBtn = document.getElementById('save-current-btn');
@@ -1031,7 +1060,7 @@
     });
 
     journeyAddBtn.addEventListener('click', (ev) => {
-        ev.stopPropagation();
+        ev.stopPropagation(); 
         isDuplicatingDaily = false; // Normal add new journey
         journeyNameInput.value = '';
         journeyNameDialog.style.display = 'flex';
@@ -1039,7 +1068,7 @@
     });
 
     saveCurrentBtn.addEventListener('click', (ev) => {
-        ev.stopPropagation();
+        ev.stopPropagation(); 
         isDuplicatingDaily = true; // Sets flag so save will copy current entries
         journeyNameInput.value = '';
         journeyNameDialog.style.display = 'flex';
@@ -1098,7 +1127,7 @@
         allJourneys.forEach(j => {
             const card = document.createElement('div');
             card.className = 'journey-record-card';
-
+            
             // Make the entire card clickable to load the journey
             card.onclick = () => {
                 currentJourneyId = j.id;
@@ -1149,7 +1178,7 @@
         mode: "range",
         dateFormat: "Y-m-d", // Keeps the underlying date value standard for calculations
         altInput: true,
-        altFormat: "d-M",
+        altFormat: "d-M",   
         conjunction: " to ",
         onClose: function(selectedDates, dateStr, instance) {
             if (selectedDates.length === 1) {
@@ -1259,7 +1288,7 @@
 
             const localTodayStr = getTzDateStr();
             const currentHour = getTzPart({ hour: 'numeric', hour12: false });
-
+            
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
@@ -1381,7 +1410,7 @@
 
             const localTodayStr = getTzDateStr();
             const currentHour = getTzPart({ hour: 'numeric', hour12: false });
-
+            
             const isPastDate = dateStr < localTodayStr;
             const isToday = (dateStr === localTodayStr);
 
@@ -1432,7 +1461,7 @@
     function renderList() {
         journeyEntries = getCurrentJourneyEntries();
         journeyEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
-
+        
         journeyEntries.forEach(entry => {
             if (entry.weather && entry.weather.timezone) {
                 const now = new Date();
@@ -1448,16 +1477,16 @@
                 };
                 const localTodayStr = getTzDateStr();
                 const currentHour = getTzPart({ hour: 'numeric', hour12: false });
-
+                
                 const isPastDate = entry.date < localTodayStr;
                 const isToday = (entry.date === localTodayStr);
 
                 const checkAndLockPeriod = (period, lockHour, pastHour) => {
                     if (!period) return;
-
+                    
                     const isLockedCondition = isPastDate || (isToday && currentHour >= lockHour);
                     const isPastCondition = isPastDate || (isToday && currentHour >= pastHour);
-
+                    
                     if (isLockedCondition) {
                         if (period.lockedTemp === undefined) {
                             period.lockedTemp = period.temp;
@@ -1465,7 +1494,7 @@
                             period.temp = period.lockedTemp;
                         }
                     }
-
+                    
                     period.isPast = isPastCondition;
                 };
 
@@ -1615,9 +1644,10 @@
     };
 
     refreshBtn.addEventListener('click', async () => {
-        refreshBtn.textContent = "WAIT";
+        const btnSpan = refreshBtn.querySelector('span') || refreshBtn;
+        btnSpan.textContent = "WAIT";
         const entries = getCurrentJourneyEntries();
-
+        
         for (let e of entries) {
             try {
                 const newWeather = await fetchWeather(e.lat, e.lon, e.date, e.country, e.weather);
@@ -1628,8 +1658,8 @@
                 console.warn("Refresh failed for entry due to network error, keeping cached data.", err);
             }
         }
-
-        refreshBtn.textContent = "REFRESH";
+        
+        btnSpan.textContent = "REFRESH";
         renderList();
     });
 
@@ -1662,16 +1692,17 @@
         const utcDay = now.getUTCDate().toString();
 
         const targetPassed = TARGET_UTC_HOURS.some(target => utcHour >= target);
-
+        
         if (TARGET_UTC_HOURS.includes(utcHour) || targetPassed) {
             if (lastAutoUpdateUtcDay !== utcDay || lastAutoUpdateHour !== utcHour) {
                 lastAutoUpdateUtcDay = utcDay;
                 lastAutoUpdateHour = utcHour;
                 localStorage.setItem('wxjourney_last_update_day', utcDay);
                 localStorage.setItem('wxjourney_last_update_hour', utcHour);
-                refreshBtn.textContent = "SYNC...";
+                const btnSpan = refreshBtn.querySelector('span') || refreshBtn;
+                btnSpan.textContent = "SYNC...";
                 performAutoUpdate().then(() => {
-                    refreshBtn.textContent = "REFRESH";
+                    btnSpan.textContent = "REFRESH";
                 });
             }
         }
