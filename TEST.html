@@ -119,6 +119,9 @@
             width: 100%;
             max-width: 400px;
             margin-bottom: 20px;
+            
+            /* Enables container query sizing for descendants */
+            container-type: inline-size;
         }
 
         .header-buttons {
@@ -135,12 +138,14 @@
             margin-top: 0;
             margin-bottom: 0;
             padding-bottom: 5px;
-            font-size: 1.5rem;
             text-align: left;
             box-sizing: border-box;
             line-height: 1.1;
 
-            /* Responsive underline fixes */
+            /* Scalable font size using clamp() & container width units (cqw) */
+            font-size: clamp(1rem, 6.2cqw, 1.5rem);
+
+            /* Underline scales automatically with the text width */
             width: fit-content;
             border-bottom: 1px solid var(--underlines);
         }
@@ -959,6 +964,7 @@
         <p>Forecast data automatically refreshes at 3AM, 9AM, 3PM, and 9PM UTC. No data loss occurs if the app attempts a refresh when no data connection is present.</p>
         <p>The temperatures displayed for AM, PM, and EV are the predicted temperatures for 8AM, 2PM, and 8PM respectively.</p>
         <p>The weather conditions displayed are for a range of six hours after the start of the respective time period.</p>
+        <p>Tapping the location name in a record will open the Windy.com website for that location.</p>
         </div>
         <div class="instruction-text madeby-text">
         <SPAN STYLE="FONT-WEIGHT:300">created by </SPAN><SPAN STYLE="FONT-WEIGHT:bold">BRITO</SPAN><SPAN STYLE="FONT-WEIGHT:300">MODS</SPAN>
@@ -970,6 +976,31 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
+    async function openWindy(lat, lon) {
+        // 1. Quick initial check for local network connectivity
+        if (!navigator.onLine) return;
+
+        // 2. Verification check to confirm active Internet connectivity
+        try {
+            await fetch('https://www.google.com/generate_204', {
+                method: 'HEAD',
+                mode: 'no-cors',
+                cache: 'no-store'
+            });
+        } catch (err) {
+            // Fetch failed (network unreachable/offline), do nothing
+            return;
+        }
+
+        // 3. Internet connection verified — proceed to open link
+        const webUrl = `https://www.windy.com/${lat}/${lon}?radar,${lat},${lon},11,detail`;
+        if (window.AndroidInterface && typeof window.AndroidInterface.openExternalUrl === 'function') {
+            window.AndroidInterface.openExternalUrl(webUrl);
+        } else {
+            window.open(webUrl, '_blank', 'noopener,noreferrer');
+        }
+    }
+
     let allJourneys = JSON.parse(localStorage.getItem('wxjourney_multi_v1')) || [];
     
     // Ensure default_journey is present in allJourneys
@@ -1241,27 +1272,72 @@
     }
 
     locationInput.addEventListener('input', async (e) => {
-        const query = e.target.value.trim();
-        if (query.length < 2) { suggestionsList.style.display = 'none'; return; }
+        const rawQuery = e.target.value;
+        if (rawQuery.trim().length < 2) { 
+            suggestionsList.style.display = 'none'; 
+            return; 
+        }
+
+        // Split input into city query (before comma) and state/region filter (after comma)
+        const parts = rawQuery.split(',').map(s => s.trim());
+        const cityName = parts[0];
+        const regionFilter = parts.length > 1 ? parts[1].toLowerCase() : '';
+
+        if (cityName.length < 2) { 
+            suggestionsList.style.display = 'none'; 
+            return; 
+        }
+
         try {
-            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5`);
+            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=15`);
             const data = await res.json();
             suggestionsList.innerHTML = '';
+
             if (data.results) {
-                data.results.forEach(p => {
+                // Filter results client-side using strictly admin1 (State/Province) and country
+                const filteredResults = data.results.filter(p => {
+                    if (!regionFilter) return true; // No comma typed yet
+
+                    const admin1 = (p.admin1 || '').toLowerCase();
+                    const country = (p.country || '').toLowerCase();
+
+                    // Matches if what the user typed after the comma matches state or country
+                    return admin1.includes(regionFilter) || country.includes(regionFilter);
+                });
+
+                if (filteredResults.length === 0) {
+                    suggestionsList.style.display = 'none';
+                    return;
+                }
+
+                filteredResults.forEach(p => {
                     const li = document.createElement('li');
+                    
+                    // Strictly use admin1 (State/Province)
                     const stateStr = p.admin1 ? `, ${p.admin1}` : '';
+                    
                     li.textContent = `${p.name}${stateStr} (${p.country})`;
                     li.onclick = () => {
                         locationInput.value = `${p.name}${stateStr}`;
-                        selectedLocationInfo = { name: p.name, state: p.admin1 || '', country: p.country, lat: p.latitude, lon: p.longitude, timezone: p.timezone || 'auto' };
+                        selectedLocationInfo = { 
+                            name: p.name, 
+                            state: p.admin1 || '', 
+                            country: p.country, 
+                            lat: p.latitude, 
+                            lon: p.longitude, 
+                            timezone: p.timezone || 'auto' 
+                        };
                         suggestionsList.style.display = 'none';
                     };
                     suggestionsList.appendChild(li);
                 });
                 suggestionsList.style.display = 'block';
+            } else {
+                suggestionsList.style.display = 'none';
             }
-        } catch (err) { console.error(err); }
+        } catch (err) { 
+            console.error(err); 
+        }
     });
 
     async function fetchWeatherOpenMeteo(lat, lon, dateStr, existingWeather = null) {
@@ -1548,6 +1624,8 @@
                 `;
             }
 
+            const windyUrl = `https://www.windy.com/${entry.lat}/${entry.lon}?radar,${entry.lat},${entry.lon},11,detail`;
+
             const card = document.createElement('div');
             card.className = 'entry-card';
             card.innerHTML = `
@@ -1564,7 +1642,9 @@
                     </div>
                     <div class="entry-row-bottom">
                         <span class="location-text">
-                            ${entry.name}${entry.state ? ', ' + entry.state : ''}
+                            <a href="${windyUrl}" onclick="event.preventDefault(); openWindy(${entry.lat}, ${entry.lon});" style="color: inherit; text-decoration: none;">
+                                ${entry.name}${entry.state ? ', ' + entry.state : ''}
+                            </a>
                         </span>
                         <span class="country-text">${entry.country}</span>
                     </div>
