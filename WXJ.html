@@ -119,6 +119,9 @@
             width: 100%;
             max-width: 400px;
             margin-bottom: 20px;
+            
+            /* Enables container query sizing for descendants */
+            container-type: inline-size;
         }
 
         .header-buttons {
@@ -135,14 +138,19 @@
             margin-top: 0;
             margin-bottom: 0;
             padding-bottom: 5px;
-            font-size: 1.5rem;
             text-align: left;
             box-sizing: border-box;
             line-height: 1.1;
 
-            /* Responsive underline fixes */
+            /* Scalable font size matching the header container */
+            font-size: clamp(1rem, 6.2cqw, 1.5rem);
+
+            /* Underline scales automatically with the text width */
             width: fit-content;
             border-bottom: 1px solid var(--underlines);
+
+            /* Creates a dedicated 3px buffer to prevent touching the JOURNEYS button */
+            margin-right: 3px;
         }
 
         h2 {
@@ -200,7 +208,7 @@
             line-height: 1;
             text-align: center;
             container-type: inline-size;
-            font-size: clamp(0.4rem, 22cqw, 0.65rem);
+            font-size: clamp(0.5rem, 30cqw, 0.75rem);;
         }
 
         .journeys-btn {
@@ -364,6 +372,32 @@
         #refresh-btn span {
             font-size: clamp(0.55rem, 18cqw, 0.85rem); /* Adjusted preferred cqw from 16cqw to 18cqw */
             white-space: nowrap;
+        }
+
+        /* Custom scrollbar styling for the location suggestions list */
+        #suggestions {
+            /* Standard CSS property for Firefox / modern browsers (thumb color | track color) */
+            scrollbar-color: var(--underlines) var(--background);
+            scrollbar-width: thin;
+        }
+
+        /* WebKit-specific styling (Chrome, Android WebView, Safari) */
+        #suggestions::-webkit-scrollbar {
+            width: 6px; /* Width of vertical scrollbar */
+        }
+
+        #suggestions::-webkit-scrollbar-track {
+            background-color: var(--background); /* Match dark dropdown background */
+            border-left: 1px solid var(--recordborder1);
+        }
+
+        #suggestions::-webkit-scrollbar-thumb {
+            background-color: var(--underlines); /* High-contrast neon thumb */
+            border-radius: 3px;
+        }
+
+        #suggestions::-webkit-scrollbar-thumb:hover {
+            background-color: var(--weekday); /* Highlight on hover/drag */
         }
 
         #suggestions {
@@ -840,7 +874,7 @@
     <h1>WX<SPAN STYLE="FONT-WEIGHT:100">Journey</SPAN></h1>
     <div class="header-buttons">
         <button class="journeys-btn" id="open-journeys-btn">JOURNEYS</button>
-        <button class="theme-btn" id="theme-toggle-btn">LIGHT<br>MODE</button>
+        <button class="theme-btn" id="theme-toggle-btn">THEME</button>
         <button class="info-btn" id="open-welcome-btn">info</button>
     </div>
 </div>
@@ -1044,15 +1078,12 @@
         
         if (currentTheme === 'light') {
             document.body.classList.add('light-mode');
-            themeToggleBtn.innerHTML = 'DULL<br>MODE';
             localStorage.setItem('wxjourney_theme', 'light');
         } else if (currentTheme === 'dull') {
             document.body.classList.add('dull-mode');
-            themeToggleBtn.innerHTML = 'DARK<br>MODE';
             localStorage.setItem('wxjourney_theme', 'dull');
         } else {
             // Default dark theme
-            themeToggleBtn.innerHTML = 'LIGHT<br>MODE';
             localStorage.setItem('wxjourney_theme', 'dark');
         }
     }
@@ -1165,7 +1196,15 @@
 
     function renderJourneyPageList() {
         journeyPageList.innerHTML = '';
-        allJourneys.forEach(j => {
+
+        // Create a copy and sort alphabetically, keeping 'default_journey' at the top
+        const sortedJourneys = [...allJourneys].sort((a, b) => {
+            if (a.id === 'default_journey') return -1;
+            if (b.id === 'default_journey') return 1;
+            return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+        });
+
+        sortedJourneys.forEach(j => {
             const card = document.createElement('div');
             card.className = 'journey-record-card';
             
@@ -1194,7 +1233,7 @@
                 removeBtn.className = 'remove-btn';
                 removeBtn.textContent = 'X';
                 removeBtn.onclick = (ev) => {
-                    ev.stopPropagation(); // Prevents card's click event (opening the journey) when deleting
+                    ev.stopPropagation(); // Prevents card's click event when deleting
                     allJourneys = allJourneys.filter(item => item.id !== j.id);
                     if (currentJourneyId === j.id) {
                         currentJourneyId = 'default_journey';
