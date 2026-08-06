@@ -898,6 +898,7 @@
         .color-red { color: var(--refreshbtn); font-weight: bold; }
         .color-plum { color: var(--recordborder2); font-weight: bold; }
         .color-pink { color: var(--tempuniton); font-weight: bold; }
+        .color-purple { color: var(--wxtimes); font-weight: bold; }
 
         /* Custom Outrun Styling for Flatpickr Calendar Popup */
         .flatpickr-calendar {
@@ -948,7 +949,7 @@
     <h1>WX<SPAN STYLE="FONT-WEIGHT:100">Journey</SPAN></h1>
     <div class="header-buttons">
         <button class="journeys-btn" id="open-journeys-btn">JOURNEYS</button>     
-        <button class="theme-btn" id="theme-toggle-btn">❀</button>
+        <button class="theme-btn" id="theme-toggle-btn">✨︎</button>
         <button class="info-btn" id="open-welcome-btn">ⓘ</button>
     </div>
 </div>
@@ -1032,12 +1033,12 @@
         <div class="instruction-list">
             <div class="instruction-card">
                 <span class="instruction-title">Add record(s)</span>
-                Enter a location using the <span class="color-blue">[location picker]</span>. Select a single date or date range in the <span class="color-green">[date picker]</span>. Press <span class="color-add">[+]</span> to create the record(s).
+                Enter a location using the <span class="color-blue">[location picker]</span>. Select a single date or date range in the <span class="color-green">[date picker]</span>. Tap <span class="color-add">[+]</span> to create the record(s).
             </div>
 
             <div class="instruction-card">
                 <span class="instruction-title">Refresh forecast</span>
-                Use <span class="color-red">[refresh]</span> to update the forecasts. New forecast data is available at 00:00, 06:00, 12:00, and 18:00 UTC.
+                Use <span class="color-red">[↻]</span> to update the forecasts. New forecast data is available at 00:00, 06:00, 12:00, and 18:00 UTC.
             </div>
 
             <div class="instruction-card">
@@ -1047,27 +1048,37 @@
 
             <div class="instruction-card">
                 <span class="instruction-title">Edit a record</span>
-                Change the date of an existing record by pressing the <span class="color-green">[date picker]</span>. Records automatically sort chronologically.
+                Change the date of an existing record by tapping the <span class="color-green">[date picker]</span>. Records automatically sort chronologically.
             </div>
 
             <div class="instruction-card">
                 <span class="instruction-title">Delete a record</span>
-                Press <span class="color-orange">[X]</span> in an existing record to delete the record.
+                Tap <span class="color-orange">[X]</span> in an existing record to delete the record.
             </div>
 
             <div class="instruction-card">
                 <span class="instruction-title">Manage Journeys</span>
-                Press <span class="color-green">[JOURNEYS]</span> to open the Journeys screen where you can view, switch between, create, or delete saved journeys.
+                Tap <span class="color-green">[JOURNEYS]</span> to open the Journeys screen where you can view, switch between, create, or delete saved journeys.
             </div>
 
             <div class="instruction-card">
                 <span class="instruction-title">Add New Journey</span>
-                In the Journeys screen, press <span class="color-green">[NEW JOURNEY]</span>, enter a name for the new journey, and press <span class="color-add">[+]</span> to save thejourney.
+                On the Journeys screen, tap <span class="color-green">[NEW JOURNEY]</span>, enter a name for the new journey, and tap <span class="color-add">[+]</span> to save the journey.
             </div>
 
             <div class="instruction-card">
                 <span class="instruction-title">Save Daily Journey</span>
-                In the Journeys screen, press <span class="color-green">[SAVE DAILY JOURNEY]</span>, enter a name, and press <span class="color-add">[+]</span> to save a duplicate copy of your Daily Journey entries under a new name.
+                On the Journeys screen, tap <span class="color-green">[SAVE DAILY JOURNEY]</span>, enter a name, and tap <span class="color-add">[+]</span> to save a duplicate copy of your Daily Journey entries under a new name.
+            </div>
+
+            <div class="instruction-card">
+                <span class="instruction-title">Edit Journey Name</span>
+                Tap <span class="color-purple">[✎]</span> in the active journey to edit forecast details.
+            </div>
+
+            <div class="instruction-card">
+                <span class="instruction-title">Theme Selection</span>
+                Tap <span class="color-red">[✨︎]</span> to cycle through the color themes.
             </div>
         </div>
         <div class="intro-text">
@@ -1936,9 +1947,9 @@
                 localStorage.setItem('wxjourney_last_update_day', utcDay);
                 localStorage.setItem('wxjourney_last_update_hour', utcHour);
                 const btnSpan = refreshBtn.querySelector('span') || refreshBtn;
-                btnSpan.textContent = "SYNC...";
+                btnSpan.textContent = "...";
                 performAutoUpdate().then(() => {
-                    btnSpan.textContent = "REFRESH";
+                    btnSpan.textContent = "↻";
                 });
             }
         }
