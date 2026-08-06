@@ -118,7 +118,7 @@
             align-items: flex-end;
             width: 100%;
             max-width: 400px;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             
             /* Enables container query sizing for descendants */
             container-type: inline-size;
@@ -142,12 +142,15 @@
             box-sizing: border-box;
             line-height: 1.1;
 
-            /* Scalable font size using clamp() & container width units (cqw) */
+            /* Scalable font size matching the header container */
             font-size: clamp(1rem, 6.2cqw, 1.5rem);
 
             /* Underline scales automatically with the text width */
             width: fit-content;
             border-bottom: 1px solid var(--underlines);
+
+            /* Creates a dedicated 3px buffer */
+            margin-right: 3px;
         }
 
         h2 {
@@ -187,14 +190,26 @@
             font-size: clamp(0.5rem, 30cqw, 0.85rem);
         }
 
+        /* Navigation Row styling above controls container */
+        .nav-button-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
         .theme-btn {
             background: transparent;
             color: var(--themebutton);
             border: 1px solid var(--themebutton);
             padding: 0;
             font-weight: normal;
-            height: 28px;
-            width: 50px;
+            height: 38px;
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -205,7 +220,7 @@
             line-height: 1;
             text-align: center;
             container-type: inline-size;
-            font-size: clamp(0.4rem, 22cqw, 0.65rem);
+            font-size: clamp(0.5rem, 25cqw, 0.85rem);
         }
 
         .journeys-btn {
@@ -214,8 +229,8 @@
             border: 1px solid var(--weekday);
             padding: 0;
             font-weight: normal;
-            height: 28px;
-            width: 65px;
+            height: 38px;
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -226,22 +241,80 @@
             line-height: 1;
             text-align: center;
             container-type: inline-size;
-            font-size: clamp(0.4rem, 18cqw, 0.65rem);
+            font-size: clamp(0.45rem, 20cqw, 0.75rem);
+        }
+
+        /* Current Journey Header Display */
+        #current-journey-header {
+            background-color: var(--background);
+            border: 1px solid var(--addbutton);
+            padding: 8px; /* Matched left/right buffer to record containers */
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 10px;
+            container-type: inline-size;
+        }
+
+        #current-journey-name-display {
+            color: var(--header);
+            font-size: clamp(0.55rem, 5cqw, 1rem);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .journey-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        #edit-journey-btn {
+            background: transparent;
+            color: var(--wxtimes);
+            border: 1px solid var(--wxtimes);
+            padding: 0;               /* Remove side padding for an icon layout */
+            font-weight: bold;
+            height: 28px;
+            width: 28px;              /* Fixed width to match height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;        /* Slightly larger font so the pencil icon stands out */
+            flex-shrink: 0;
         }
 
         .controls-container {
             background-color: var(--background);
-            padding: 12px;
+            padding: 8px; /* Matched left/right buffer to record containers */
             border: 1px solid var(--entryborder);
             width: 100%;
             max-width: 400px;
             margin-bottom: 10px;
             box-sizing: border-box;
+            display: none; /* Hidden by default */
         }
 
         .input-group {
             margin-bottom: 12px;
             position: relative;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            width: 100%;
         }
 
         .date-action-row {
@@ -249,17 +322,18 @@
             justify-content: space-between;
             align-items: center;
             gap: 6px;
+            width: 100%;
         }
 
         .date-plus-group {
             display: flex;
             gap: 6px;
             align-items: center;
+            width: 100%;
         }
 
         /* Main Location Input Styling */
         #location-input {
-            width: 100%;
             height: 38px;
             padding: 10px;
             background-color: var(--background);
@@ -268,6 +342,8 @@
             font-family: inherit;
             box-sizing: border-box;
             font-size: 0.9rem;
+            flex: 1;
+            width: auto;
         }
 
         #location-input:focus {
@@ -277,7 +353,7 @@
         }
 
         /* Control Panel Height Matching */
-        .date-plus-group input, #add-btn, #temp-toggle-btn, #refresh-btn {
+        .date-plus-group input, #add-btn {
             height: 38px;
             box-sizing: border-box;
             display: flex;
@@ -285,7 +361,7 @@
             justify-content: center;
         }
 
-        /* Main Control Date Picker Styling (Targets original & Flatpickr generated inputs) */
+        /* Date Picker Input now fills available row space */
         .date-plus-group input {
             padding: 0 6px;
             background-color: var(--background) !important;
@@ -293,7 +369,8 @@
             color: var(--datepicker) !important;
             font-family: inherit;
             font-weight: normal;
-            width: 150px;
+            flex: 1;
+            width: 100%;
             font-size: 0.72rem;
             text-align: center;
             cursor: pointer;
@@ -318,16 +395,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
             container-type: inline-size;
             font-size: clamp(0.8rem, 50cqw, 1.2rem);
         }
 
-        /* Unit Toggle Styling */
-        #temp-toggle-btn {
+        /* Unit Toggle Styling inside Current Journey Header */
+        .temp-toggle-btn {
+            background: transparent;
             border: 1px solid var(--tempunitborder);
-            padding: 0 4px;
-            min-width: 60px;
-            max-width: 80px;
+            padding: 0 6px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -335,47 +413,56 @@
             overflow: hidden;
             white-space: nowrap;
             box-sizing: border-box;
-            container-type: inline-size;
+            cursor: pointer;
+            font-family: inherit;
+            flex-shrink: 0;
         }
 
-        #temp-toggle-btn span {
+        .temp-toggle-btn span {
             color: var(--tempunitoff);
             font-weight: normal;
-            font-size: clamp(0.5rem, 20cqw, 0.75rem);
+            font-size: 0.75rem;
             transition: all 0.2s;
             white-space: nowrap;
         }
 
-        #temp-toggle-btn .active-unit {
+        .temp-toggle-btn .active-unit {
             color: var(--tempuniton);
             font-weight: 900;
-            font-size: clamp(0.6rem, 26cqw, 0.95rem);
+            font-size: 0.85rem;
             text-decoration: none;
         }
 
-        #refresh-btn {
+        .refresh-btn {
             color: var(--refreshbtn);
             border: 1px solid var(--refreshbtn);
             padding: 0 8px;
-            font-weight: normal;
-            container-type: inline-size;
+            font-weight: bold;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex: 1;             /* <-- ADD THIS: Allows the button to expand into available row space */
-            min-width: 65px;     /* <-- ADD THIS: Prevents the border from collapsing narrower than 65px */
+            box-sizing: border-box;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            flex-shrink: 0;
         }
 
-        #refresh-btn span {
-            font-size: clamp(0.55rem, 18cqw, 0.85rem); /* Adjusted preferred cqw from 16cqw to 18cqw */
+        .refresh-btn span {
             white-space: nowrap;
         }
 
+        /* Custom scrollbar styling for the location suggestions list */
         #suggestions {
+            scrollbar-color: var(--underlines) var(--background);
+            scrollbar-width: thin;
             position: absolute;
             top: 100%;
             left: 0;
-            right: 0;
+            /* Restricts the dropdown line to the width of the input field */
+            right: 44px;
             background-color: var(--background);
             border: 1px solid var(--locbox);
             max-height: 150px;
@@ -385,6 +472,24 @@
             margin: 0;
             padding: 0;
             font-size: 0.9rem;
+        }
+
+        #suggestions::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #suggestions::-webkit-scrollbar-track {
+            background-color: var(--background);
+            border-left: 1px solid var(--recordborder1);
+        }
+
+        #suggestions::-webkit-scrollbar-thumb {
+            background-color: var(--underlines);
+            border-radius: 3px;
+        }
+
+        #suggestions::-webkit-scrollbar-thumb:hover {
+            background-color: var(--weekday);
         }
 
         #suggestions li {
@@ -518,6 +623,12 @@
             font-size: clamp(0.5rem, 45cqw, 1rem);
         }
 
+        /* Inline close button overrides for controls-container matching welcome page close button size */
+        #close-controls-btn.absolute-close-btn {
+            position: static;
+            font-size: clamp(0.5rem, 45cqw, 1rem);
+        }
+
         /* Edit Date Inputs inside Cards */
         .entry-card input {
             background: transparent !important;
@@ -593,7 +704,9 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* Ensure journey modal controls show by default inside overlay */
         .welcome-overlay .controls-container {
+            display: block; 
             background-color: var(--background);
             padding: 12px;
             border: 2px solid var(--welcomeborder);
@@ -844,15 +957,34 @@
 <div class="header-container">
     <h1>WX<SPAN STYLE="FONT-WEIGHT:100">Journey</SPAN></h1>
     <div class="header-buttons">
-        <button class="journeys-btn" id="open-journeys-btn">JOURNEYS</button>
-        <button class="theme-btn" id="theme-toggle-btn">LIGHT<br>MODE</button>
         <button class="info-btn" id="open-welcome-btn">info</button>
     </div>
 </div>
 
-<div class="controls-container">
+<!-- Navigation Button Row (Left to Right: Theme, Journeys) -->
+<div class="nav-button-row">
+    <button class="theme-btn" id="theme-toggle-btn">THEME</button>
+    <button class="journeys-btn" id="open-journeys-btn">JOURNEYS</button>
+</div>
+
+<!-- Current Journey Display Header -->
+<div id="current-journey-header">
+    <span id="current-journey-name-display"></span>
+    <div class="journey-header-actions">
+        <button id="edit-journey-btn"></button>
+        <button class="refresh-btn" id="refresh-btn"><span>↻</span></button>
+        <button class="temp-toggle-btn" id="temp-toggle-btn">
+            <span class="label-f">°F</span>
+            <span class="label-c">°C</span>
+        </button>
+    </div>
+</div>
+
+<!-- Hidden by default Controls Container -->
+<div class="controls-container" id="main-controls-container">
     <div class="input-group">
         <input type="text" id="location-input" placeholder="Enter City/Town..." autocomplete="off">
+        <button class="absolute-close-btn" id="close-controls-btn">X</button>
         <ul id="suggestions"></ul>
     </div>
     <div class="date-action-row">
@@ -860,11 +992,6 @@
             <input type="text" id="date-input" placeholder="Select Date(s)..." readonly>
             <button id="add-btn">+</button>
         </div>
-        <button id="temp-toggle-btn">
-            <span id="label-f">° F</span>
-            <span id="label-c">° C</span>
-        </button>
-        <button id="refresh-btn"><span>Refresh</span></button>
     </div>
 </div>
 
@@ -1040,6 +1167,27 @@
     const refreshBtn = document.getElementById('refresh-btn');
     const journeyListContainer = document.getElementById('journey-list');
 
+    // Controls Container Toggle DOM Bindings
+    const mainControlsContainer = document.getElementById('main-controls-container');
+    const editJourneyBtn = document.getElementById('edit-journey-btn');
+    const closeControlsBtn = document.getElementById('close-controls-btn');
+    const currentJourneyNameDisplay = document.getElementById('current-journey-name-display');
+
+    editJourneyBtn.addEventListener('click', () => {
+        mainControlsContainer.style.display = 'block';
+    });
+
+    closeControlsBtn.addEventListener('click', () => {
+        mainControlsContainer.style.display = 'none';
+    });
+
+    function updateCurrentJourneyDisplay() {
+        const currentJ = allJourneys.find(j => j.id === currentJourneyId);
+        if (currentJ) {
+            currentJourneyNameDisplay.textContent = currentJ.name;
+        }
+    }
+
     // Theme Toggle DOM Bindings (Order: dark -> light -> dull)
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
     let currentTheme = localStorage.getItem('wxjourney_theme') || 'dark';
@@ -1049,15 +1197,12 @@
         
         if (currentTheme === 'light') {
             document.body.classList.add('light-mode');
-            themeToggleBtn.innerHTML = 'DULL<br>MODE';
             localStorage.setItem('wxjourney_theme', 'light');
         } else if (currentTheme === 'dull') {
             document.body.classList.add('dull-mode');
-            themeToggleBtn.innerHTML = 'DARK<br>MODE';
             localStorage.setItem('wxjourney_theme', 'dull');
         } else {
             // Default dark theme
-            themeToggleBtn.innerHTML = 'LIGHT<br>MODE';
             localStorage.setItem('wxjourney_theme', 'dark');
         }
     }
@@ -1170,7 +1315,15 @@
 
     function renderJourneyPageList() {
         journeyPageList.innerHTML = '';
-        allJourneys.forEach(j => {
+
+        // Create a copy and sort alphabetically, keeping 'default_journey' at the top
+        const sortedJourneys = [...allJourneys].sort((a, b) => {
+            if (a.id === 'default_journey') return -1;
+            if (b.id === 'default_journey') return 1;
+            return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+        });
+
+        sortedJourneys.forEach(j => {
             const card = document.createElement('div');
             card.className = 'journey-record-card';
             
@@ -1199,7 +1352,7 @@
                 removeBtn.className = 'remove-btn';
                 removeBtn.textContent = 'X';
                 removeBtn.onclick = (ev) => {
-                    ev.stopPropagation(); // Prevents card's click event (opening the journey) when deleting
+                    ev.stopPropagation(); // Prevents card's click event when deleting
                     allJourneys = allJourneys.filter(item => item.id !== j.id);
                     if (currentJourneyId === j.id) {
                         currentJourneyId = 'default_journey';
@@ -1251,15 +1404,12 @@
     }
 
     function updateToggleDisplay() {
-        const f = document.getElementById('label-f');
-        const c = document.getElementById('label-c');
-        if (tempUnit === 'fahrenheit') {
-            f.className = 'active-unit';
-            c.className = '';
-        } else {
-            f.className = '';
-            c.className = 'active-unit';
-        }
+        document.querySelectorAll('.label-f').forEach(f => {
+            f.className = (tempUnit === 'fahrenheit') ? 'label-f active-unit' : 'label-f';
+        });
+        document.querySelectorAll('.label-c').forEach(c => {
+            c.className = (tempUnit === 'celsius') ? 'label-c active-unit' : 'label-c';
+        });
     }
 
     function getWeatherDescription(code) {
@@ -1553,6 +1703,9 @@
         journeyEntries = getCurrentJourneyEntries();
         journeyEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
         
+        // Updates the new header name anytime the list renders
+        updateCurrentJourneyDisplay();
+
         journeyEntries.forEach(entry => {
             if (entry.weather && entry.weather.timezone) {
                 const now = new Date();
@@ -1606,7 +1759,7 @@
             let weatherHTML = `<div class="weather-data"><span style="color:var(--xbutton); font-size: 0.8rem; padding: 2px 0;">Date outside of forecast range...</span></div>`;
 
             if (entry.weather) {
-                const unitSymbol = tempUnit === 'fahrenheit' ? '° F' : '° C';
+                const unitSymbol = tempUnit === 'fahrenheit' ? '°F' : '°C';
                 const getDesc = (period) => period.desc || getWeatherDescription(period.code);
 
                 const renderRow = (label, period) => {
@@ -1723,6 +1876,7 @@
         renderList();
     });
 
+    // Temp toggle button listener
     tempToggleBtn.addEventListener('click', () => {
         tempUnit = (tempUnit === 'fahrenheit') ? 'celsius' : 'fahrenheit';
         updateToggleDisplay();
@@ -1738,9 +1892,10 @@
         renderList();
     };
 
+    // Refresh button listener
     refreshBtn.addEventListener('click', async () => {
         const btnSpan = refreshBtn.querySelector('span') || refreshBtn;
-        btnSpan.textContent = "WAIT...";
+        btnSpan.textContent = "...";
         const entries = getCurrentJourneyEntries();
         
         for (let e of entries) {
@@ -1754,7 +1909,7 @@
             }
         }
         
-        btnSpan.textContent = "REFRESH";
+        btnSpan.textContent = "↻";
         renderList();
     });
 
