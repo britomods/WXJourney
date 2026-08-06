@@ -178,7 +178,7 @@
             padding: 0;
             font-weight: normal;
             height: 28px;
-            width: 50px;
+            width: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -187,19 +187,7 @@
             cursor: pointer;
             font-family: inherit;
             container-type: inline-size;
-            font-size: clamp(0.5rem, 30cqw, 0.85rem);
-        }
-
-        /* Navigation Row styling above controls container */
-        .nav-button-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 6px;
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
+            font-size: clamp(0.5rem, 30cqw, 1rem);
         }
 
         .theme-btn {
@@ -208,8 +196,8 @@
             border: 1px solid var(--themebutton);
             padding: 0;
             font-weight: normal;
-            height: 38px;
-            flex: 1;
+            height: 28px;
+            width: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -220,7 +208,7 @@
             line-height: 1;
             text-align: center;
             container-type: inline-size;
-            font-size: clamp(0.5rem, 25cqw, 0.85rem);
+            font-size: clamp(0.5rem, 30cqw, 1rem);
         }
 
         .journeys-btn {
@@ -229,8 +217,8 @@
             border: 1px solid var(--weekday);
             padding: 0;
             font-weight: normal;
-            height: 38px;
-            flex: 1;
+            height: 28px;
+            width: 65px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -241,14 +229,15 @@
             line-height: 1;
             text-align: center;
             container-type: inline-size;
-            font-size: clamp(0.45rem, 20cqw, 0.75rem);
+            font-size: clamp(0.4rem, 18cqw, 0.65rem);
         }
 
-        /* Current Journey Header Display */
+        /* Current Journey Header Display - Height matched to .journey-record-card (48px) */
         #current-journey-header {
             background-color: var(--background);
-            border: 1px solid var(--addbutton);
-            padding: 8px; /* Matched left/right buffer to record containers */
+            border: 1px solid var(--weekday);
+            padding: 0 8px;
+            height: 48px;
             box-sizing: border-box;
             display: flex;
             justify-content: space-between;
@@ -283,17 +272,17 @@
             background: transparent;
             color: var(--wxtimes);
             border: 1px solid var(--wxtimes);
-            padding: 0;               /* Remove side padding for an icon layout */
+            padding: 0;               
             font-weight: bold;
-            height: 28px;
-            width: 28px;              /* Fixed width to match height */
+            height: 28px;             /* Sized to fit comfortably inside 48px container */
+            width: 28px;              
             display: flex;
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.9rem;        /* Slightly larger font so the pencil icon stands out */
+            font-size: 1rem;          
             flex-shrink: 0;
         }
 
@@ -380,7 +369,7 @@
             background-color: transparent;
             cursor: pointer;
             font-weight: bold;
-            text-transform: uppercase;
+            /*text-transform: uppercase;*/
             font-family: inherit;
         }
 
@@ -405,7 +394,7 @@
             background: transparent;
             border: 1px solid var(--tempunitborder);
             padding: 0 6px;
-            height: 28px;
+            height: 28px;             /* Sized to fit comfortably inside 48px container */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -421,7 +410,7 @@
         .temp-toggle-btn span {
             color: var(--tempunitoff);
             font-weight: normal;
-            font-size: 0.75rem;
+            font-size: 0.75rem;        
             transition: all 0.2s;
             white-space: nowrap;
         }
@@ -429,23 +418,24 @@
         .temp-toggle-btn .active-unit {
             color: var(--tempuniton);
             font-weight: 900;
-            font-size: 0.85rem;
+            font-size: 0.85rem;        
             text-decoration: none;
         }
 
         .refresh-btn {
             color: var(--refreshbtn);
             border: 1px solid var(--refreshbtn);
-            padding: 0 8px;
+            padding: 0;
             font-weight: bold;
-            height: 28px;
+            height: 28px;             /* Sized to fit comfortably inside 48px container */
+            width: 28px;              
             display: flex;
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.75rem;
+            font-size: 1rem;          
             text-transform: uppercase;
             flex-shrink: 0;
         }
@@ -957,21 +947,17 @@
 <div class="header-container">
     <h1>WX<SPAN STYLE="FONT-WEIGHT:100">Journey</SPAN></h1>
     <div class="header-buttons">
-        <button class="info-btn" id="open-welcome-btn">info</button>
+        <button class="journeys-btn" id="open-journeys-btn">JOURNEYS</button>     
+        <button class="theme-btn" id="theme-toggle-btn">❀</button>
+        <button class="info-btn" id="open-welcome-btn">ⓘ</button>
     </div>
-</div>
-
-<!-- Navigation Button Row (Left to Right: Theme, Journeys) -->
-<div class="nav-button-row">
-    <button class="theme-btn" id="theme-toggle-btn">THEME</button>
-    <button class="journeys-btn" id="open-journeys-btn">JOURNEYS</button>
 </div>
 
 <!-- Current Journey Display Header -->
 <div id="current-journey-header">
     <span id="current-journey-name-display"></span>
     <div class="journey-header-actions">
-        <button id="edit-journey-btn"></button>
+        <button id="edit-journey-btn">✎</button>
         <button class="refresh-btn" id="refresh-btn"><span>↻</span></button>
         <button class="temp-toggle-btn" id="temp-toggle-btn">
             <span class="label-f">°F</span>
