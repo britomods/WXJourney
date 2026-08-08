@@ -590,14 +590,33 @@
             font-size: clamp(0.5rem, 50cqw, 0.9rem);
         }
 
+        .journey-card-edit-btn {
+            background: transparent;
+            color: var(--weekday);
+            border: 1px solid var(--weekday);
+            padding: 0;
+            font-weight: bold;
+            height: 28px;
+            width: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            container-type: inline-size;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
         .absolute-close-btn {
             background: transparent;
             color: var(--xbutton);
             border: 1px solid var(--xbutton);
             padding: 0;
             font-weight: bold;
-            height: 38px;
-            width: 38px;
+            height: 28px;
+            width: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -613,9 +632,24 @@
             font-size: clamp(0.5rem, 45cqw, 1rem);
         }
 
-        /* Inline close button overrides for controls-container matching welcome page close button size */
-        #close-controls-btn.absolute-close-btn {
-            position: static;
+        /* Isolated Close Button for Main Controls Container */
+        .controls-close-btn {
+            background: transparent;
+            color: var(--xbutton);
+            border: 1px solid var(--xbutton);
+            padding: 0;
+            font-weight: bold;
+            height: 38px;
+            width: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: inherit;
+            container-type: inline-size;
             font-size: clamp(0.5rem, 45cqw, 1rem);
         }
 
@@ -949,7 +983,7 @@
     <h1>WX<SPAN STYLE="FONT-WEIGHT:100">Journey</SPAN></h1>
     <div class="header-buttons">
         <button class="journeys-btn" id="open-journeys-btn">JOURNEYS</button>     
-        <button class="theme-btn" id="theme-toggle-btn">✨︎</button>
+        <button class="theme-btn" id="theme-toggle-btn">❀</button>
         <button class="info-btn" id="open-welcome-btn">ⓘ</button>
     </div>
 </div>
@@ -971,13 +1005,13 @@
 <div class="controls-container" id="main-controls-container">
     <div class="input-group">
         <input type="text" id="location-input" placeholder="Enter City/Town..." autocomplete="off">
-        <button class="absolute-close-btn" id="close-controls-btn">X</button>
+        <button class="controls-close-btn" id="close-controls-btn">X</button>
         <ul id="suggestions"></ul>
     </div>
     <div class="date-action-row">
         <div class="date-plus-group">
             <input type="text" id="date-input" placeholder="Select Date(s)..." readonly>
-            <button id="add-btn">+</button>
+            <button id="add-btn">✓</button>
         </div>
     </div>
 </div>
@@ -1012,7 +1046,7 @@
     <div class="journey-modal-content">
         <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
             <input type="text" id="journey-name-input" placeholder="Journey Name..." autocomplete="off" style="flex: 1;">
-            <button id="journey-dialog-save">+</button>
+            <button id="journey-dialog-save">✓</button>
             <button class="remove-btn" id="close-journey-dialog-btn" style="height: 38px; width: 38px;">X</button>
         </div>
     </div>
@@ -1033,7 +1067,7 @@
         <div class="instruction-list">
             <div class="instruction-card">
                 <span class="instruction-title">Add record(s)</span>
-                Enter a location using the <span class="color-blue">[location picker]</span>. Select a single date or date range in the <span class="color-green">[date picker]</span>. Tap <span class="color-add">[+]</span> to create the record(s).
+                Enter a location using the <span class="color-blue">[location picker]</span>. Select a single date or date range in the <span class="color-green">[date picker]</span>. Tap <span class="color-add">[✓]</span> to create the record(s).
             </div>
 
             <div class="instruction-card">
@@ -1063,12 +1097,12 @@
 
             <div class="instruction-card">
                 <span class="instruction-title">Add New Journey</span>
-                On the Journeys screen, tap <span class="color-green">[NEW JOURNEY]</span>, enter a name for the new journey, and tap <span class="color-add">[+]</span> to save the journey.
+                On the Journeys screen, tap <span class="color-green">[NEW JOURNEY]</span>, enter a name for the new journey, and tap <span class="color-add">[✓]</span> to save the journey.
             </div>
 
             <div class="instruction-card">
                 <span class="instruction-title">Save Daily Journey</span>
-                On the Journeys screen, tap <span class="color-green">[SAVE DAILY JOURNEY]</span>, enter a name, and tap <span class="color-add">[+]</span> to save a duplicate copy of your Daily Journey entries under a new name.
+                On the Journeys screen, tap <span class="color-green">[SAVE DAILY JOURNEY]</span>, enter a name, and tap <span class="color-add">[✓]</span> to save a duplicate copy of your Daily Journey entries under a new name.
             </div>
 
             <div class="instruction-card">
@@ -1231,6 +1265,7 @@
     const saveCurrentBtn = document.getElementById('save-current-btn');
 
     let isDuplicatingDaily = false;
+    let editingJourneyId = null;
 
     // Journey Name Dialog DOM Bindings
     const journeyNameDialog = document.getElementById('journey-name-dialog');
@@ -1250,6 +1285,7 @@
     journeyAddBtn.addEventListener('click', (ev) => {
         ev.stopPropagation(); 
         isDuplicatingDaily = false; // Normal add new journey
+        editingJourneyId = null;
         journeyNameInput.value = '';
         journeyNameDialog.style.display = 'flex';
         journeyNameInput.focus();
@@ -1258,6 +1294,7 @@
     saveCurrentBtn.addEventListener('click', (ev) => {
         ev.stopPropagation(); 
         isDuplicatingDaily = true; // Sets flag so save will copy current entries
+        editingJourneyId = null;
         journeyNameInput.value = '';
         journeyNameDialog.style.display = 'flex';
         journeyNameInput.focus();
@@ -1266,37 +1303,49 @@
     closeJourneyDialogBtn.addEventListener('click', () => {
         journeyNameDialog.style.display = 'none';
         isDuplicatingDaily = false; // Reset on cancel
+        editingJourneyId = null;
     });
 
     journeyDialogSave.addEventListener('click', () => {
         const nameVal = journeyNameInput.value.trim();
         if (nameVal) {
-            const newId = Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5);
-            let initialEntries = [];
-
-            if (isDuplicatingDaily) {
-                // Now copies the active journey rather than strictly the default one
-                const targetJ = allJourneys.find(j => j.id === currentJourneyId);
-                if (targetJ && targetJ.entries) {
-                    // Deep copy entries and assign new IDs to prevent reference issues
-                    initialEntries = JSON.parse(JSON.stringify(targetJ.entries)).map(entry => {
-                        return {
-                            ...entry,
-                            id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5)
-                        };
-                    });
+            if (editingJourneyId) {
+                // Rename existing journey
+                const targetJ = allJourneys.find(j => j.id === editingJourneyId);
+                if (targetJ) {
+                    targetJ.name = nameVal;
                 }
-            }
+            } else {
+                // Create new journey
+                const newId = Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5);
+                let initialEntries = [];
 
-            allJourneys.push({
-                id: newId,
-                name: nameVal,
-                entries: initialEntries
-            });
+                if (isDuplicatingDaily) {
+                    // Now copies the active journey rather than strictly the default one
+                    const targetJ = allJourneys.find(j => j.id === currentJourneyId);
+                    if (targetJ && targetJ.entries) {
+                        // Deep copy entries and assign new IDs to prevent reference issues
+                        initialEntries = JSON.parse(JSON.stringify(targetJ.entries)).map(entry => {
+                            return {
+                                ...entry,
+                                id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5)
+                            };
+                        });
+                    }
+                }
+
+                allJourneys.push({
+                    id: newId,
+                    name: nameVal,
+                    entries: initialEntries
+                });
+            }
             saveAllJourneys();
             renderJourneyPageList();
+            renderList();
             journeyNameDialog.style.display = 'none';
             isDuplicatingDaily = false; // Reset state
+            editingJourneyId = null;
         }
     });
 
@@ -1329,6 +1378,7 @@
                 currentJourneyId = j.id;
                 journeyEntries = getCurrentJourneyEntries();
                 saveAllJourneys();
+                mainControlsContainer.style.display = 'none';
                 journeysModal.style.display = 'none';
                 renderList();
             };
@@ -1343,8 +1393,21 @@
             actionsDiv.style.alignItems = 'center';
             actionsDiv.style.gap = '6px';
 
-            // Only render the delete (X) button for non-default journeys
+            // Only render edit (✎) and remove (X) buttons for non-default journeys
             if (j.id !== 'default_journey') {
+                const cardEditBtn = document.createElement('button');
+                cardEditBtn.className = 'journey-card-edit-btn';
+                cardEditBtn.textContent = '✎';
+                cardEditBtn.onclick = (ev) => {
+                    ev.stopPropagation(); // Prevents card's click event when editing
+                    editingJourneyId = j.id;
+                    isDuplicatingDaily = false;
+                    journeyNameInput.value = j.name;
+                    journeyNameDialog.style.display = 'flex';
+                    journeyNameInput.focus();
+                };
+                actionsDiv.appendChild(cardEditBtn);
+
                 const removeBtn = document.createElement('button');
                 removeBtn.className = 'remove-btn';
                 removeBtn.textContent = 'X';
@@ -1354,6 +1417,7 @@
                     if (currentJourneyId === j.id) {
                         currentJourneyId = 'default_journey';
                         journeyEntries = getCurrentJourneyEntries();
+                        mainControlsContainer.style.display = 'none';
                     }
                     saveAllJourneys();
                     renderJourneyPageList();
